@@ -24,8 +24,6 @@ body {
   margin:0;
   min-height:100vh;
   background:var(--bg);
-  background-size:cover;
-  background-position:center;
   color:var(--text);
   display:flex;
   justify-content:center;
@@ -55,11 +53,11 @@ body {
   color:white;
   cursor:pointer;
 }
+  .header h1{
+    font-size:16px;
 .name-btn { background:#4caf50; }
 .theme-btn { background:var(--accent); }
-.header h1{
-  font-size:16px;
-}
+
 /* Profile */
 .profile {
   display:flex;
@@ -85,53 +83,22 @@ body {
   font-weight:600;
 }
 
-/* Controls */
-.controls {
-  display:flex;
-  gap:6px;
-  margin-bottom:8px;
-}
-.controls button, .controls input {
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-.bg1 { background:#121212; color:white; }
-.bg2 { background:#1b263b; color:white; }
-.bg3 { background:#2d6a4f; color:white; }
-
-/* Card color */
-.card-colors {
-  display:flex;
-  gap:6px;
-  margin-bottom:8px;
-}
-.card-colors button {
-  flex:1;
-  height:28px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-.c1 { background:#1e1e1e; }
-.c2 { background:#2a3a5e; }
-.c3 { background:#2d6a4f; }
-.c4 { background:#5a1f2d; }
-
 /* Input */
 .input-box {
   display:flex;
   gap:6px;
+  flex-wrap:wrap;
 }
 .input-box input,
-.input-box input[type="time"] {
+.input-box select {
   padding:10px;
   border:none;
   border-radius:6px;
 }
-.input-box input[type="text"] { flex:1; }
+.input-box input[type="text"] { flex:1 1 100%; }
+.input-box input[type="number"] { width:80px; }
+.input-box select { width:90px; }
+
 .input-box button {
   background:var(--accent);
   border:none;
@@ -163,9 +130,10 @@ li.completed .task-text {
   text-decoration:line-through;
   opacity:.6;
 }
+
 .task-info { flex:1; }
 .task-text { font-size:15px; }
-.task-time { font-size:12px; opacity:.7; }
+.task-time { font-size:13px; opacity:.7; }
 
 .actions {
   display:flex;
@@ -196,7 +164,7 @@ li.completed .task-text {
 
 <body>
 
-<div class="todo" id="todoBox">
+<div class="todo">
 
   <div class="header">
     <button class="name-btn" onclick="changeName()">Name</button>
@@ -211,25 +179,13 @@ li.completed .task-text {
     <div class="welcome" id="welcomeText"></div>
   </div>
 
-  <!-- Background -->
-  <div class="controls">
-    <button class="bg1" onclick="setBgColor('#121212')">Dark</button>
-    <button class="bg2" onclick="setBgColor('#1b263b')">Blue</button>
-    <button class="bg3" onclick="setBgColor('#2d6a4f')">Green</button>
-    <input type="file" accept="image/*" onchange="setBgImage(event)">
-  </div>
-
-  <!-- Card color -->
-  <div class="card-colors">
-    <button class="c1" onclick="setCard('#1e1e1e')"></button>
-    <button class="c2" onclick="setCard('#2a3a5e')"></button>
-    <button class="c3" onclick="setCard('#2d6a4f')"></button>
-    <button class="c4" onclick="setCard('#5a1f2d')"></button>
-  </div>
-
   <div class="input-box">
-    <input id="taskInput" placeholder="Task">
-    <input type="time" id="timeInput">
+    <input id="taskInput" placeholder="Task (Exercise, Study...)">
+    <input type="number" id="durationInput" min="1" placeholder="Time">
+    <select id="unitInput">
+      <option value="min">min</option>
+      <option value="hr">hr</option>
+    </select>
     <button onclick="addTask()">Add</button>
   </div>
 
@@ -240,50 +196,32 @@ li.completed .task-text {
 
 <script>
 const taskInput = document.getElementById("taskInput");
-const timeInput = document.getElementById("timeInput");
+const durationInput = document.getElementById("durationInput");
+const unitInput = document.getElementById("unitInput");
 const list = document.getElementById("taskList");
 const welcomeText = document.getElementById("welcomeText");
-const todoBox = document.getElementById("todoBox");
 const profileImg = document.getElementById("profileImg");
 const profileInput = document.getElementById("profileInput");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let theme = localStorage.getItem("theme") || "dark";
 let name = localStorage.getItem("name") || prompt("Enter your name") || "User";
-let card = localStorage.getItem("card");
-let bg = localStorage.getItem("bg");
 let photo = localStorage.getItem("photo");
 let isSaved = true;
 
 welcomeText.textContent = `Welcome, ${name} 👋`;
-localStorage.setItem("name", name);
-
 document.body.className = theme;
-if (card) todoBox.style.background = card;
-if (bg) document.body.style.background = bg;
 profileImg.src = photo || "https://via.placeholder.com/90";
 
 function changeName(){
   const n = prompt("Enter name", name);
   if(n){ name=n; localStorage.setItem("name",n); welcomeText.textContent=`Welcome, ${n} 👋`; }
 }
-
 function toggleTheme(){
   theme = theme==="dark"?"light":"dark";
   document.body.className=theme;
   localStorage.setItem("theme",theme);
 }
-
-function setCard(c){ todoBox.style.background=c; localStorage.setItem("card",c); }
-
-function setBgColor(c){ document.body.style.background=c; localStorage.setItem("bg",c); }
-
-function setBgImage(e){
-  const r=new FileReader();
-  r.onload=()=>{ document.body.style.background=`url(${r.result})`; localStorage.setItem("bg",`url(${r.result})`); }
-  r.readAsDataURL(e.target.files[0]);
-}
-
 function pickProfile(){ profileInput.click(); }
 profileInput.onchange=e=>{
   const r=new FileReader();
@@ -292,11 +230,18 @@ profileInput.onchange=e=>{
 };
 
 render();
+
 function addTask(){
-  if(!taskInput.value) return;
-  tasks.unshift({text:taskInput.value,time:timeInput.value||"No time",completed:false});
-  taskInput.value=""; timeInput.value=""; isSaved=false; render();
+  if(!taskInput.value || !durationInput.value) return;
+  tasks.unshift({
+    text: taskInput.value,
+    duration: `${durationInput.value} ${unitInput.value}`,
+    completed:false
+  });
+  taskInput.value=""; durationInput.value="";
+  isSaved=false; render();
 }
+
 function toggleComplete(i){ tasks[i].completed=!tasks[i].completed; isSaved=false; render(); }
 function editTask(i){
   const t=prompt("Edit task",tasks[i].text);
@@ -312,7 +257,7 @@ function render(){
     li.innerHTML=`
       <div class="task-info">
         <div class="task-text">${t.text}</div>
-        <div class="task-time">⏰ ${t.time}</div>
+        <div class="task-time">⏱️ ${t.duration}</div>
       </div>
       <div class="actions">
         <button class="edit" onclick="editTask(${i})">✏</button>
@@ -336,6 +281,3 @@ window.addEventListener("beforeunload",e=>{
 
 </body>
 </html>
-
-
-
