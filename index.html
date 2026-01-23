@@ -13,7 +13,11 @@
   --accent:#ff3d3d;
 }
 
-*{box-sizing:border-box;font-family:Arial,sans-serif;}
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 
 body{
   margin:0;
@@ -48,10 +52,9 @@ body{
 .header h1{font-size:16px;margin:0;}
 .header button{
   border:none;
-  padding:6px 12px;
+  padding:8px 12px;
   border-radius:6px;
   color:white;
-  cursor:pointer;
 }
 .name-btn{background:#4caf50;}
 .theme-btn{background:var(--accent);}
@@ -69,24 +72,19 @@ body{
   border-radius:50%;
   object-fit:cover;
   border:2px solid var(--accent);
-  cursor:pointer;
 }
-.profile small{font-size:12px;opacity:.7;}
-.welcome{margin-top:6px;font-size:22px;font-weight:600;}
 
 /* Performance */
 #performance{
   font-size:13px;
   margin:8px 0;
-  opacity:.9;
 }
 
 /* Background controls */
-.bg-section{margin:10px 0;}
-.bg-title{font-size:13px;opacity:.7;margin-bottom:4px;}
 .bg-controls{
   display:flex;
   gap:6px;
+  margin-bottom:8px;
 }
 .bg-controls button,
 .bg-controls input{
@@ -94,31 +92,22 @@ body{
   padding:8px;
   border:none;
   border-radius:6px;
-  cursor:pointer;
 }
-.bg-dark{background:#121212;color:white;}
-.bg-blue{background:#1b263b;color:white;}
-.bg-green{background:#2d6a4f;color:white;}
 
-/* Input */
+/* Input (FIXED FOR MOBILE) */
 .input-box{
-  display:flex;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap:6px;
-  flex-wrap:wrap;
 }
-.input-box input{
-  padding:10px;
-  border:none;
-  border-radius:6px;
-}
-.input-box input[type="text"]{flex:1 1 100%;}
+.input-box input,
 .input-box button{
-  background:var(--accent);
+  padding:12px;
   border:none;
-  color:white;
-  padding:10px 14px;
   border-radius:6px;
-  cursor:pointer;
+}
+.input-box input[type="text"]{
+  grid-column:1/4;
 }
 
 /* Tasks */
@@ -126,43 +115,16 @@ ul{
   list-style:none;
   padding:0;
   margin:14px 0;
-  flex:1;
-  overflow-y:auto;
 }
 li{
-  background:rgba(0,0,0,.35);
+  background:#2a2a2a;
   padding:10px;
   margin-bottom:8px;
   border-radius:6px;
-  display:flex;
-  gap:8px;
-}
-li.completed .task-text{
-  text-decoration:line-through;
-  opacity:.6;
 }
 li.missed{
   background:#5a1f1f;
-  border-left:4px solid red;
 }
-
-.task-info{flex:1;}
-.task-text{font-size:15px;}
-.task-time{font-size:13px;opacity:.8;}
-
-.actions{
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.actions button{
-  border:none;
-  padding:5px 7px;
-  border-radius:4px;
-  cursor:pointer;
-}
-.edit{background:orange;}
-.delete{background:red;color:white;}
 
 /* Save */
 .save-btn{
@@ -171,8 +133,6 @@ li.missed{
   border:none;
   padding:12px;
   border-radius:8px;
-  font-size:15px;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -182,108 +142,55 @@ li.missed{
 <div class="todo" id="todoBox">
 
   <div class="header">
-    <button class="name-btn" onclick="changeName()">Name</button>
+    <button id="nameBtn" class="name-btn">Name</button>
     <h1>To-Do-List</h1>
-    <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+    <button id="themeBtn" class="theme-btn">Theme</button>
   </div>
 
   <div class="profile">
-    <img id="profileImg" onclick="pickProfile()">
-    <small>Tap photo to change</small>
-    <input type="file" id="profileInput" hidden accept="image/*">
-    <div class="welcome" id="welcomeText"></div>
+    <img id="profileImg">
+    <input type="file" id="profileInput" hidden>
+    <div id="welcomeText"></div>
   </div>
 
-  <!-- Daily Performance -->
   <div id="performance"></div>
 
-  <!-- Page background -->
-  <div class="bg-section">
-    <div class="bg-title">Page background</div>
-    <div class="bg-controls">
-      <button class="bg-dark" onclick="setPageColor('#121212')">Dark</button>
-      <button class="bg-blue" onclick="setPageColor('#1b263b')">Blue</button>
-      <button class="bg-green" onclick="setPageColor('#2d6a4f')">Green</button>
-      <input type="file" accept="image/*" onchange="setPageImage(event)">
-    </div>
-  </div>
-
-  <!-- Card background -->
-  <div class="bg-section">
-    <div class="bg-title">To-Do background</div>
-    <div class="bg-controls">
-      <button class="bg-dark" onclick="setCardColor('#1e1e1e')">Dark</button>
-      <button class="bg-blue" onclick="setCardColor('#2a3a5e')">Blue</button>
-      <button class="bg-green" onclick="setCardColor('#2d6a4f')">Green</button>
-      <input type="file" accept="image/*" onchange="setCardImage(event)">
-    </div>
-  </div>
-
-  <!-- Task input -->
   <div class="input-box">
-    <input id="taskInput" placeholder="Task (Study, Exercise…)">
+    <input id="taskInput" placeholder="Task">
     <input type="time" id="fromTime">
     <input type="time" id="toTime">
-    <button onclick="addTask()">Add</button>
+    <button id="addBtn">Add</button>
   </div>
 
   <ul id="taskList"></ul>
 
-  <button class="save-btn" onclick="saveTasks()">Save</button>
+  <button class="save-btn" id="saveBtn">Save</button>
 </div>
 
 <script>
-const taskInput=document.getElementById("taskInput");
-const fromTime=document.getElementById("fromTime");
-const toTime=document.getElementById("toTime");
-const list=document.getElementById("taskList");
-const performanceBox=document.getElementById("performance");
-const welcomeText=document.getElementById("welcomeText");
-const profileImg=document.getElementById("profileImg");
-const profileInput=document.getElementById("profileInput");
-const todoBox=document.getElementById("todoBox");
+/* ELEMENTS */
+const taskInput = document.getElementById("taskInput");
+const fromTime = document.getElementById("fromTime");
+const toTime = document.getElementById("toTime");
+const list = document.getElementById("taskList");
+const addBtn = document.getElementById("addBtn");
+const saveBtn = document.getElementById("saveBtn");
+const performanceBox = document.getElementById("performance");
+const welcomeText = document.getElementById("welcomeText");
 
-let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
-let name=localStorage.getItem("name")||prompt("Enter your name")||"User";
-let photo=localStorage.getItem("photo");
-let pageBg=localStorage.getItem("pageBg");
-let cardBg=localStorage.getItem("cardBg");
-let isSaved=true;
+/* STATE */
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let name = localStorage.getItem("name") || "User";
 
-welcomeText.textContent=`Welcome, ${name} 👋`;
-profileImg.src=photo||"https://via.placeholder.com/90";
-if(pageBg)document.body.style.background=pageBg;
-if(cardBg)todoBox.style.background=cardBg;
+/* INIT */
+welcomeText.textContent = `Welcome, ${name} 👋`;
+render();
 
-/* name */
-function changeName(){
-  const n=prompt("Enter name",name);
-  if(n){name=n;localStorage.setItem("name",n);welcomeText.textContent=`Welcome, ${n} 👋`;}
+/* HELPERS */
+function toMin(t){
+  const [h,m]=t.split(":").map(Number);
+  return h*60+m;
 }
-function toggleTheme(){}
-function pickProfile(){profileInput.click();}
-profileInput.onchange=e=>{
-  const r=new FileReader();
-  r.onload=()=>{profileImg.src=r.result;localStorage.setItem("photo",r.result);}
-  r.readAsDataURL(e.target.files[0]);
-};
-
-/* backgrounds */
-function setPageColor(c){document.body.style.background=c;localStorage.setItem("pageBg",c);}
-function setPageImage(e){
-  const r=new FileReader();
-  r.onload=()=>{document.body.style.background=`url(${r.result})`;localStorage.setItem("pageBg",`url(${r.result})`);}
-  r.readAsDataURL(e.target.files[0]);
-}
-function setCardColor(c){todoBox.style.background=c;localStorage.setItem("cardBg",c);}
-function setCardImage(e){
-  const r=new FileReader();
-  r.onload=()=>{todoBox.style.background=`url(${r.result})`;localStorage.setItem("cardBg",`url(${r.result})`);}
-  r.readAsDataURL(e.target.files[0]);
-}
-
-/* helpers */
-function toMin(t){const[a,b]=t.split(":").map(Number);return a*60+b;}
 function fmt(t){
   let[h,m]=t.split(":").map(Number);
   const ap=h>=12?"PM":"AM";
@@ -291,49 +198,38 @@ function fmt(t){
   return `${h}:${m.toString().padStart(2,"0")} ${ap}`;
 }
 
-/* tasks */
-render();
+/* ADD TASK (MOBILE SAFE) */
+addBtn.addEventListener("click", ()=>{
+  if(!taskInput.value || !fromTime.value || !toTime.value){
+    alert("Fill all fields");
+    return;
+  }
 
-function addTask(){
-  if(!taskInput.value||!fromTime.value||!toTime.value)return;
-  const start=toMin(fromTime.value);
-  const end=toMin(toTime.value);
-  if(end<=start){alert("End time must be after start time");return;}
+  const start = toMin(fromTime.value);
+  const end = toMin(toTime.value);
+  if(end<=start){
+    alert("End time must be after start time");
+    return;
+  }
 
-  const diff=end-start;
-  const dur=diff>=60?`${Math.floor(diff/60)} hr ${diff%60||""}`.trim():`${diff} min`;
+  const diff = end-start;
+  const dur = diff>=60 ? `${Math.floor(diff/60)} hr` : `${diff} min`;
 
   tasks.push({
-    text:taskInput.value,
-    from:fromTime.value,
-    to:toTime.value,
-    duration:dur,
+    text: taskInput.value,
+    from: fromTime.value,
+    to: toTime.value,
+    duration: dur,
     completed:false
   });
 
   taskInput.value="";
   fromTime.value="";
   toTime.value="";
-  isSaved=false;
   render();
-}
+});
 
-function toggleComplete(i){
-  tasks[i].completed=!tasks[i].completed;
-  isSaved=false;
-  render();
-}
-function editTask(i){
-  const t=prompt("Edit task",tasks[i].text);
-  if(t){tasks[i].text=t;isSaved=false;render();}
-}
-function deleteTask(i){
-  tasks.splice(i,1);
-  isSaved=false;
-  render();
-}
-
-/* performance + missed */
+/* RENDER */
 function render(){
   list.innerHTML="";
   let planned=0, completed=0;
@@ -343,53 +239,36 @@ function render(){
   tasks.forEach((t,i)=>{
     const mins=toMin(t.to)-toMin(t.from);
     planned+=mins;
-    if(t.completed)completed+=mins;
-
+    if(t.completed) completed+=mins;
     const missed=!t.completed && nowMin>toMin(t.to);
 
     const li=document.createElement("li");
-    if(t.completed)li.classList.add("completed");
-    if(missed)li.classList.add("missed");
+    if(missed) li.classList.add("missed");
 
     li.innerHTML=`
-      <div class="task-info">
-        <div class="task-text">
-          ${t.text} (${t.duration})
-          ${missed?"⚠️ MISSED":""}
-        </div>
-        <div class="task-time">🕒 ${fmt(t.from)} – ${fmt(t.to)}</div>
-      </div>
-      <div class="actions">
-        <button class="edit" onclick="editTask(${i})">✏</button>
-        <button class="delete" onclick="deleteTask(${i})">✖</button>
-        <input type="checkbox" ${t.completed?"checked":""}
-          onclick="toggleComplete(${i})">
-      </div>`;
+      <b>${t.text} (${t.duration})</b><br>
+      🕒 ${fmt(t.from)} – ${fmt(t.to)}<br>
+      <input type="checkbox" ${t.completed?"checked":""}>
+    `;
+
+    li.querySelector("input").addEventListener("change",()=>{
+      t.completed=!t.completed;
+      render();
+    });
+
     list.appendChild(li);
   });
 
-  const pct=planned?Math.round((completed/planned)*100):0;
-  performanceBox.innerHTML=
-    `<strong>Today:</strong> ${Math.floor(planned/60)}h planned |
-     ${Math.floor(completed/60)}h completed | ${pct}%`;
+  const pct = planned ? Math.round((completed/planned)*100) : 0;
+  performanceBox.innerHTML = `Today: ${Math.floor(planned/60)}h planned | ${Math.floor(completed/60)}h done | ${pct}%`;
 }
 
-/* save */
-function saveTasks(){
+/* SAVE */
+saveBtn.addEventListener("click", ()=>{
   localStorage.setItem("tasks",JSON.stringify(tasks));
-  isSaved=true;
   alert("Saved");
-}
-
-/* exit warning */
-window.addEventListener("beforeunload",e=>{
-  if(!isSaved){e.preventDefault();e.returnValue="";}
 });
-
-/* auto refresh every minute */
-setInterval(render,60000);
 </script>
 
 </body>
 </html>
-
