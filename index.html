@@ -6,21 +6,16 @@
 <title>Daily To-Do</title>
 
 <style>
-:root {
+:root{
   --bg:#121212;
   --card:#1e1e1e;
   --text:#ffffff;
   --accent:#ff3d3d;
 }
-body.light {
-  --bg:#f5f5f5;
-  --text:#000000;
-  --accent:#d32f2f;
-}
 
-* { box-sizing:border-box; font-family:Arial,sans-serif; }
+*{box-sizing:border-box;font-family:Arial,sans-serif;}
 
-body {
+body{
   margin:0;
   min-height:100vh;
   background:var(--bg);
@@ -32,8 +27,7 @@ body {
   padding:20px;
 }
 
-/* App */
-.todo {
+.todo{
   width:100%;
   max-width:420px;
   background:var(--card);
@@ -46,31 +40,30 @@ body {
 }
 
 /* Header */
-.header {
+.header{
   display:flex;
   justify-content:space-between;
+  align-items:center;
 }
-.header button {
+.header h1{font-size:16px;margin:0;}
+.header button{
   border:none;
   padding:6px 12px;
   border-radius:6px;
   color:white;
   cursor:pointer;
 }
-  .header h1{
-    font-size:16px;
-  }
-.name-btn { background:#4caf50; }
-.theme-btn { background:var(--accent); }
+.name-btn{background:#4caf50;}
+.theme-btn{background:var(--accent);}
 
 /* Profile */
-.profile {
+.profile{
   display:flex;
   flex-direction:column;
   align-items:center;
   margin:10px 0;
 }
-.profile img {
+.profile img{
   width:90px;
   height:90px;
   border-radius:50%;
@@ -78,58 +71,48 @@ body {
   border:2px solid var(--accent);
   cursor:pointer;
 }
-.profile small {
-  font-size:12px;
-  opacity:.7;
-}
-.welcome {
-  margin-top:6px;
-  font-size:22px;
-  font-weight:600;
+.profile small{font-size:12px;opacity:.7;}
+.welcome{margin-top:6px;font-size:22px;font-weight:600;}
+
+/* Performance */
+#performance{
+  font-size:13px;
+  margin:8px 0;
+  opacity:.9;
 }
 
-/* 🔽 NEW: Background controls */
-.bg-section {
-  margin:10px 0;
-}
-.bg-title {
-  font-size:13px;
-  opacity:.7;
-  margin-bottom:4px;
-}
-.bg-controls {
+/* Background controls */
+.bg-section{margin:10px 0;}
+.bg-title{font-size:13px;opacity:.7;margin-bottom:4px;}
+.bg-controls{
   display:flex;
   gap:6px;
 }
 .bg-controls button,
-.bg-controls input {
+.bg-controls input{
   flex:1;
   padding:8px;
   border:none;
   border-radius:6px;
   cursor:pointer;
 }
-.bg-dark { background:#121212; color:white; }
-.bg-blue { background:#1b263b; color:white; }
-.bg-green { background:#2d6a4f; color:white; }
+.bg-dark{background:#121212;color:white;}
+.bg-blue{background:#1b263b;color:white;}
+.bg-green{background:#2d6a4f;color:white;}
 
 /* Input */
-.input-box {
+.input-box{
   display:flex;
   gap:6px;
   flex-wrap:wrap;
 }
-.input-box input,
-.input-box select {
+.input-box input{
   padding:10px;
   border:none;
   border-radius:6px;
 }
-.input-box input[type="text"] { flex:1 1 100%; }
-.input-box input[type="number"] { width:80px; }
-.input-box select { width:90px; }
-
-.input-box button {
+.input-box input[type="text"]{flex:1 1 100%;}
+.input-box button{
   background:var(--accent);
   border:none;
   color:white;
@@ -139,14 +122,14 @@ body {
 }
 
 /* Tasks */
-ul {
+ul{
   list-style:none;
   padding:0;
   margin:14px 0;
   flex:1;
   overflow-y:auto;
 }
-li {
+li{
   background:rgba(0,0,0,.35);
   padding:10px;
   margin-bottom:8px;
@@ -154,33 +137,35 @@ li {
   display:flex;
   gap:8px;
 }
-body.light li { background:#e0e0e0; }
-
-li.completed .task-text {
+li.completed .task-text{
   text-decoration:line-through;
   opacity:.6;
 }
+li.missed{
+  background:#5a1f1f;
+  border-left:4px solid red;
+}
 
-.task-info { flex:1; }
-.task-text { font-size:15px; }
-.task-time { font-size:13px; opacity:.7; }
+.task-info{flex:1;}
+.task-text{font-size:15px;}
+.task-time{font-size:13px;opacity:.8;}
 
-.actions {
+.actions{
   display:flex;
   align-items:center;
   gap:5px;
 }
-.actions button {
+.actions button{
   border:none;
   padding:5px 7px;
   border-radius:4px;
   cursor:pointer;
 }
-.edit { background:orange; }
-.delete { background:red; color:white; }
+.edit{background:orange;}
+.delete{background:red;color:white;}
 
 /* Save */
-.save-btn {
+.save-btn{
   background:green;
   color:white;
   border:none;
@@ -209,7 +194,10 @@ li.completed .task-text {
     <div class="welcome" id="welcomeText"></div>
   </div>
 
-  <!-- 🔽 NEW: PAGE BACKGROUND -->
+  <!-- Daily Performance -->
+  <div id="performance"></div>
+
+  <!-- Page background -->
   <div class="bg-section">
     <div class="bg-title">Page background</div>
     <div class="bg-controls">
@@ -220,7 +208,7 @@ li.completed .task-text {
     </div>
   </div>
 
-  <!-- 🔽 NEW: CARD BACKGROUND -->
+  <!-- Card background -->
   <div class="bg-section">
     <div class="bg-title">To-Do background</div>
     <div class="bg-controls">
@@ -231,13 +219,11 @@ li.completed .task-text {
     </div>
   </div>
 
+  <!-- Task input -->
   <div class="input-box">
-    <input id="taskInput" placeholder="Task (Exercise, Study...)">
-    <input type="number" id="durationInput" min="1" placeholder="Time">
-    <select id="unitInput">
-      <option value="min">min</option>
-      <option value="hr">hr</option>
-    </select>
+    <input id="taskInput" placeholder="Task (Study, Exercise…)">
+    <input type="time" id="fromTime">
+    <input type="time" id="toTime">
     <button onclick="addTask()">Add</button>
   </div>
 
@@ -247,121 +233,161 @@ li.completed .task-text {
 </div>
 
 <script>
-const taskInput = document.getElementById("taskInput");
-const durationInput = document.getElementById("durationInput");
-const unitInput = document.getElementById("unitInput");
-const list = document.getElementById("taskList");
-const welcomeText = document.getElementById("welcomeText");
-const profileImg = document.getElementById("profileImg");
-const profileInput = document.getElementById("profileInput");
-const todoBox = document.getElementById("todoBox");
+const taskInput=document.getElementById("taskInput");
+const fromTime=document.getElementById("fromTime");
+const toTime=document.getElementById("toTime");
+const list=document.getElementById("taskList");
+const performanceBox=document.getElementById("performance");
+const welcomeText=document.getElementById("welcomeText");
+const profileImg=document.getElementById("profileImg");
+const profileInput=document.getElementById("profileInput");
+const todoBox=document.getElementById("todoBox");
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let theme = localStorage.getItem("theme") || "dark";
-let name = localStorage.getItem("name") || prompt("Enter your name") || "User";
-let photo = localStorage.getItem("photo");
-let pageBg = localStorage.getItem("pageBg");
-let cardBg = localStorage.getItem("cardBg");
-let isSaved = true;
+let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
+let name=localStorage.getItem("name")||prompt("Enter your name")||"User";
+let photo=localStorage.getItem("photo");
+let pageBg=localStorage.getItem("pageBg");
+let cardBg=localStorage.getItem("cardBg");
+let isSaved=true;
 
-/* restore */
-welcomeText.textContent = `Welcome, ${name} 👋`;
-document.body.className = theme;
-profileImg.src = photo || "https://via.placeholder.com/90";
-if(pageBg) document.body.style.background = pageBg;
-if(cardBg) todoBox.style.background = cardBg;
+welcomeText.textContent=`Welcome, ${name} 👋`;
+profileImg.src=photo||"https://via.placeholder.com/90";
+if(pageBg)document.body.style.background=pageBg;
+if(cardBg)todoBox.style.background=cardBg;
 
-/* existing logic */
+/* name */
 function changeName(){
-  const n = prompt("Enter name", name);
-  if(n){ name=n; localStorage.setItem("name",n); welcomeText.textContent=`Welcome, ${n} 👋`; }
+  const n=prompt("Enter name",name);
+  if(n){name=n;localStorage.setItem("name",n);welcomeText.textContent=`Welcome, ${n} 👋`;}
 }
-function toggleTheme(){
-  theme = theme==="dark"?"light":"dark";
-  document.body.className=theme;
-  localStorage.setItem("theme",theme);
-}
-function pickProfile(){ profileInput.click(); }
+function toggleTheme(){}
+function pickProfile(){profileInput.click();}
 profileInput.onchange=e=>{
   const r=new FileReader();
-  r.onload=()=>{ profileImg.src=r.result; localStorage.setItem("photo",r.result); }
+  r.onload=()=>{profileImg.src=r.result;localStorage.setItem("photo",r.result);}
   r.readAsDataURL(e.target.files[0]);
 };
 
-/* 🔽 NEW background functions */
-function setPageColor(c){
-  document.body.style.background=c;
-  localStorage.setItem("pageBg",c);
-}
+/* backgrounds */
+function setPageColor(c){document.body.style.background=c;localStorage.setItem("pageBg",c);}
 function setPageImage(e){
   const r=new FileReader();
-  r.onload=()=>{
-    document.body.style.background=`url(${r.result})`;
-    localStorage.setItem("pageBg",`url(${r.result})`);
-  };
+  r.onload=()=>{document.body.style.background=`url(${r.result})`;localStorage.setItem("pageBg",`url(${r.result})`);}
   r.readAsDataURL(e.target.files[0]);
 }
-function setCardColor(c){
-  todoBox.style.background=c;
-  localStorage.setItem("cardBg",c);
-}
+function setCardColor(c){todoBox.style.background=c;localStorage.setItem("cardBg",c);}
 function setCardImage(e){
   const r=new FileReader();
-  r.onload=()=>{
-    todoBox.style.background=`url(${r.result})`;
-    localStorage.setItem("cardBg",`url(${r.result})`);
-  };
+  r.onload=()=>{todoBox.style.background=`url(${r.result})`;localStorage.setItem("cardBg",`url(${r.result})`);}
   r.readAsDataURL(e.target.files[0]);
+}
+
+/* helpers */
+function toMin(t){const[a,b]=t.split(":").map(Number);return a*60+b;}
+function fmt(t){
+  let[h,m]=t.split(":").map(Number);
+  const ap=h>=12?"PM":"AM";
+  h=h%12||12;
+  return `${h}:${m.toString().padStart(2,"0")} ${ap}`;
 }
 
 /* tasks */
 render();
 
 function addTask(){
-  if(!taskInput.value || !durationInput.value) return;
-  tasks.unshift({
-    text: taskInput.value,
-    duration: `${durationInput.value} ${unitInput.value}`,
+  if(!taskInput.value||!fromTime.value||!toTime.value)return;
+  const start=toMin(fromTime.value);
+  const end=toMin(toTime.value);
+  if(end<=start){alert("End time must be after start time");return;}
+
+  const diff=end-start;
+  const dur=diff>=60?`${Math.floor(diff/60)} hr ${diff%60||""}`.trim():`${diff} min`;
+
+  tasks.push({
+    text:taskInput.value,
+    from:fromTime.value,
+    to:toTime.value,
+    duration:dur,
     completed:false
   });
-  taskInput.value=""; durationInput.value="";
-  isSaved=false; render();
+
+  taskInput.value="";
+  fromTime.value="";
+  toTime.value="";
+  isSaved=false;
+  render();
 }
-function toggleComplete(i){ tasks[i].completed=!tasks[i].completed; isSaved=false; render(); }
+
+function toggleComplete(i){
+  tasks[i].completed=!tasks[i].completed;
+  isSaved=false;
+  render();
+}
 function editTask(i){
   const t=prompt("Edit task",tasks[i].text);
-  if(t){ tasks[i].text=t; isSaved=false; render(); }
+  if(t){tasks[i].text=t;isSaved=false;render();}
 }
-function deleteTask(i){ tasks.splice(i,1); isSaved=false; render(); }
+function deleteTask(i){
+  tasks.splice(i,1);
+  isSaved=false;
+  render();
+}
 
+/* performance + missed */
 function render(){
   list.innerHTML="";
+  let planned=0, completed=0;
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+
   tasks.forEach((t,i)=>{
+    const mins=toMin(t.to)-toMin(t.from);
+    planned+=mins;
+    if(t.completed)completed+=mins;
+
+    const missed=!t.completed && nowMin>toMin(t.to);
+
     const li=document.createElement("li");
-    if(t.completed) li.classList.add("completed");
+    if(t.completed)li.classList.add("completed");
+    if(missed)li.classList.add("missed");
+
     li.innerHTML=`
       <div class="task-info">
-        <div class="task-text">${t.text}</div>
-        <div class="task-time">⏱️ ${t.duration}</div>
+        <div class="task-text">
+          ${t.text} (${t.duration})
+          ${missed?"⚠️ MISSED":""}
+        </div>
+        <div class="task-time">🕒 ${fmt(t.from)} – ${fmt(t.to)}</div>
       </div>
       <div class="actions">
         <button class="edit" onclick="editTask(${i})">✏</button>
         <button class="delete" onclick="deleteTask(${i})">✖</button>
-        <input type="checkbox" ${t.completed?"checked":""} onclick="toggleComplete(${i})">
+        <input type="checkbox" ${t.completed?"checked":""}
+          onclick="toggleComplete(${i})">
       </div>`;
     list.appendChild(li);
   });
+
+  const pct=planned?Math.round((completed/planned)*100):0;
+  performanceBox.innerHTML=
+    `<strong>Today:</strong> ${Math.floor(planned/60)}h planned |
+     ${Math.floor(completed/60)}h completed | ${pct}%`;
 }
 
+/* save */
 function saveTasks(){
   localStorage.setItem("tasks",JSON.stringify(tasks));
   isSaved=true;
   alert("Saved");
 }
 
+/* exit warning */
 window.addEventListener("beforeunload",e=>{
-  if(!isSaved){ e.preventDefault(); e.returnValue=""; }
+  if(!isSaved){e.preventDefault();e.returnValue="";}
 });
+
+/* auto refresh every minute */
+setInterval(render,60000);
 </script>
 
 </body>
