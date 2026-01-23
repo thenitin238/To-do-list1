@@ -7,50 +7,81 @@
 
 <style>
 :root {
-    --bg:#121212; --card:#1e1e1e; --text:#fff; --accent:#ff3d3d;
+    --card:#1e1e1e;
+    --text:#ffffff;
+    --accent:#ff3d3d;
 }
 body.light {
-    --bg:#f5f5f5; --card:#fff; --text:#000; --accent:#d32f2f;
+    --card:#ffffff;
+    --text:#000000;
+    --accent:#d32f2f;
 }
+
 * { box-sizing:border-box; font-family:Arial,sans-serif; }
 
 body {
     margin:0;
-    background:var(--bg);
-    color:var(--text);
     min-height:100vh;
     display:flex;
     justify-content:center;
-    padding:80px 10px 100px;
+    padding:20px;
+    color:var(--text);
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
 }
-
-/* Top buttons */
-.theme-btn, .name-btn {
-    position:fixed;
-    top:15px;
-    padding:8px 14px;
-    border:none;
-    border-radius:6px;
-    color:white;
-    cursor:pointer;
-    z-index:100;
-}
-.theme-btn { right:15px; background:var(--accent); }
-.name-btn { left:15px; background:#4caf50; }
 
 /* App */
 .todo {
     width:100%;
     max-width:420px;
     background:var(--card);
-    padding:18px;
-    border-radius:10px;
+    padding:16px;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    backdrop-filter: blur(6px);
 }
 
-h2, .welcome {
-    text-align:center;
-    margin-bottom:10px;
+/* Header */
+.header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
 }
+.header button {
+    border:none;
+    padding:6px 12px;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+}
+.name-btn { background:#4caf50; }
+.theme-btn { background:var(--accent); }
+
+.welcome {
+    text-align:center;
+    margin-bottom:6px;
+}
+
+/* Background controls */
+.bg-controls {
+    display:flex;
+    gap:6px;
+    margin-bottom:8px;
+}
+.bg-controls button,
+.bg-controls input {
+    flex:1;
+    padding:6px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+.bg1 { background:#121212; color:white; }
+.bg2 { background:#1b263b; color:white; }
+.bg3 { background:#2d6a4f; color:white; }
 
 /* Input */
 .input-box {
@@ -59,7 +90,7 @@ h2, .welcome {
 }
 .input-box input,
 .input-box input[type="time"] {
-    padding:12px;
+    padding:10px;
     border:none;
     border-radius:6px;
     outline:none;
@@ -70,21 +101,27 @@ h2, .welcome {
     background:var(--accent);
     border:none;
     color:white;
-    padding:12px 14px;
+    padding:10px 14px;
     border-radius:6px;
     cursor:pointer;
 }
 
 /* Tasks */
-ul { list-style:none; padding:0; margin-top:16px; }
+ul {
+    list-style:none;
+    padding:0;
+    margin:14px 0;
+    flex:1;
+    overflow-y:auto;
+}
 li {
-    background:#2b2b2b;
-    padding:12px;
-    margin-bottom:10px;
+    background:rgba(0,0,0,0.35);
+    padding:10px;
+    margin-bottom:8px;
     border-radius:6px;
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:8px;
 }
 body.light li { background:#e0e0e0; }
 
@@ -94,54 +131,55 @@ li.completed .task-text {
 }
 
 .task-info { flex:1; }
-.task-text { font-size:16px; }
-.task-time { font-size:13px; opacity:.7; }
+.task-text { font-size:15px; }
+.task-time { font-size:12px; opacity:.7; }
 
-/* Actions */
-.actions { display:flex; align-items:center; gap:6px; }
+.actions {
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
 .actions button {
     border:none;
-    padding:6px 8px;
+    padding:5px 7px;
     border-radius:4px;
     cursor:pointer;
 }
 .edit { background:orange; }
 .delete { background:red; color:white; }
-.actions input[type="checkbox"] {
-    width:20px; height:20px; cursor:pointer;
-}
 
 /* Save */
 .save-btn {
-    position:fixed;
-    bottom:15px;
-    left:50%;
-    transform:translateX(-50%);
     background:green;
     color:white;
     border:none;
-    padding:14px 26px;
+    padding:12px;
     border-radius:8px;
-    font-size:16px;
+    font-size:15px;
     cursor:pointer;
-}
-
-/* Mobile */
-@media(max-width:480px){
-    .task-text{font-size:15px;}
-    .task-time{font-size:12px;}
+    margin-top:8px;
 }
 </style>
 </head>
 
 <body>
 
-<button class="name-btn" onclick="changeName()">Name</button>
-<button class="theme-btn" onclick="toggleTheme()">Theme</button>
-
 <div class="todo">
+
+    <div class="header">
+        <button class="name-btn" onclick="changeName()">Name</button>
+        <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+    </div>
+
     <div class="welcome" id="welcomeText"></div>
-    <h2>My To-Do</h2>
+
+    <!-- Background options -->
+    <div class="bg-controls">
+        <button class="bg1" onclick="setColor('#121212')">Dark</button>
+        <button class="bg2" onclick="setColor('#1b263b')">Blue</button>
+        <button class="bg3" onclick="setColor('#2d6a4f')">Green</button>
+        <input type="file" accept="image/*" onchange="setImage(event)">
+    </div>
 
     <div class="input-box">
         <input id="taskInput" placeholder="Task">
@@ -150,9 +188,9 @@ li.completed .task-text {
     </div>
 
     <ul id="taskList"></ul>
-</div>
 
-<button class="save-btn" onclick="saveTasks()">Save</button>
+    <button class="save-btn" onclick="saveTasks()">Save</button>
+</div>
 
 <script>
 const taskInput = document.getElementById("taskInput");
@@ -160,23 +198,24 @@ const timeInput = document.getElementById("timeInput");
 const list = document.getElementById("taskList");
 const welcomeText = document.getElementById("welcomeText");
 
+/* Load state */
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let theme = localStorage.getItem("theme") || "dark";
 let userName = localStorage.getItem("userName");
+let bg = localStorage.getItem("bg");
 let isSaved = true;
 
-/* Name logic */
+/* Name */
 if (!userName) {
-    userName = prompt("Enter your name");
-    if (!userName || !userName.trim()) userName = "User";
+    userName = prompt("Enter your name") || "User";
     localStorage.setItem("userName", userName);
 }
 welcomeText.textContent = `Welcome, ${userName} 👋`;
 
 function changeName() {
-    const newName = prompt("Enter your name", userName);
-    if (newName && newName.trim()) {
-        userName = newName;
+    const n = prompt("Enter your name", userName);
+    if (n && n.trim()) {
+        userName = n;
         localStorage.setItem("userName", userName);
         welcomeText.textContent = `Welcome, ${userName} 👋`;
     }
@@ -184,11 +223,29 @@ function changeName() {
 
 /* Theme */
 document.body.className = theme;
-
 function toggleTheme() {
     theme = theme === "dark" ? "light" : "dark";
     document.body.className = theme;
     localStorage.setItem("theme", theme);
+}
+
+/* Background */
+if (bg) document.body.style.background = bg;
+
+function setColor(color) {
+    document.body.style.background = color;
+    localStorage.setItem("bg", color);
+}
+
+function setImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        document.body.style.background = `url(${reader.result})`;
+        localStorage.setItem("bg", `url(${reader.result})`);
+    };
+    reader.readAsDataURL(file);
 }
 
 /* Tasks */
@@ -201,66 +258,66 @@ function addTask() {
         time: timeInput.value || "No time",
         completed:false
     });
-    taskInput.value = "";
-    timeInput.value = "";
-    isSaved = false;
+    taskInput.value="";
+    timeInput.value="";
+    isSaved=false;
     render();
 }
 
 function toggleComplete(i){
-    tasks[i].completed = !tasks[i].completed;
-    isSaved = false;
+    tasks[i].completed=!tasks[i].completed;
+    isSaved=false;
     render();
 }
 
 function editTask(i){
     const t = prompt("Edit task", tasks[i].text);
     if (t && t.trim()) {
-        tasks[i].text = t;
-        isSaved = false;
+        tasks[i].text=t;
+        isSaved=false;
         render();
     }
 }
 
 function deleteTask(i){
     tasks.splice(i,1);
-    isSaved = false;
+    isSaved=false;
     render();
 }
 
 function render(){
-    list.innerHTML = "";
+    list.innerHTML="";
     tasks.forEach((t,i)=>{
-        const li = document.createElement("li");
-        if (t.completed) li.classList.add("completed");
+        const li=document.createElement("li");
+        if(t.completed) li.classList.add("completed");
 
-        const info = document.createElement("div");
-        info.className = "task-info";
+        const info=document.createElement("div");
+        info.className="task-info";
 
-        const text = document.createElement("div");
-        text.className = "task-text";
-        text.textContent = t.text;
+        const text=document.createElement("div");
+        text.className="task-text";
+        text.textContent=t.text;
 
-        const time = document.createElement("div");
-        time.className = "task-time";
-        time.textContent = "⏰ " + t.time;
+        const time=document.createElement("div");
+        time.className="task-time";
+        time.textContent="⏰ "+t.time;
 
         info.append(text,time);
 
-        const actions = document.createElement("div");
-        actions.className = "actions";
+        const actions=document.createElement("div");
+        actions.className="actions";
 
-        const check = document.createElement("input");
+        const check=document.createElement("input");
         check.type="checkbox";
-        check.checked = t.completed;
-        check.onclick = ()=>toggleComplete(i);
+        check.checked=t.completed;
+        check.onclick=()=>toggleComplete(i);
 
-        const edit = document.createElement("button");
+        const edit=document.createElement("button");
         edit.textContent="✏";
         edit.className="edit";
         edit.onclick=()=>editTask(i);
 
-        const del = document.createElement("button");
+        const del=document.createElement("button");
         del.textContent="✖";
         del.className="delete";
         del.onclick=()=>deleteTask(i);
@@ -273,13 +330,13 @@ function render(){
 
 /* Save */
 function saveTasks(){
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    isSaved = true;
+    localStorage.setItem("tasks",JSON.stringify(tasks));
+    isSaved=true;
     alert("Saved");
 }
 
 /* Exit warning */
-window.addEventListener("beforeunload", e=>{
+window.addEventListener("beforeunload",e=>{
     if(!isSaved){
         e.preventDefault();
         e.returnValue="";
@@ -289,3 +346,4 @@ window.addEventListener("beforeunload", e=>{
 
 </body>
 </html>
+
