@@ -24,6 +24,8 @@ body {
   margin:0;
   min-height:100vh;
   background:var(--bg);
+  background-size:cover;
+  background-position:center;
   color:var(--text);
   display:flex;
   justify-content:center;
@@ -35,6 +37,8 @@ body {
   width:100%;
   max-width:420px;
   background:var(--card);
+  background-size:cover;
+  background-position:center;
   padding:16px;
   border-radius:14px;
   display:flex;
@@ -83,6 +87,31 @@ body {
   font-size:22px;
   font-weight:600;
 }
+
+/* 🔽 NEW: Background controls */
+.bg-section {
+  margin:10px 0;
+}
+.bg-title {
+  font-size:13px;
+  opacity:.7;
+  margin-bottom:4px;
+}
+.bg-controls {
+  display:flex;
+  gap:6px;
+}
+.bg-controls button,
+.bg-controls input {
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+.bg-dark { background:#121212; color:white; }
+.bg-blue { background:#1b263b; color:white; }
+.bg-green { background:#2d6a4f; color:white; }
 
 /* Input */
 .input-box {
@@ -165,7 +194,7 @@ li.completed .task-text {
 
 <body>
 
-<div class="todo">
+<div class="todo" id="todoBox">
 
   <div class="header">
     <button class="name-btn" onclick="changeName()">Name</button>
@@ -178,6 +207,28 @@ li.completed .task-text {
     <small>Tap photo to change</small>
     <input type="file" id="profileInput" hidden accept="image/*">
     <div class="welcome" id="welcomeText"></div>
+  </div>
+
+  <!-- 🔽 NEW: PAGE BACKGROUND -->
+  <div class="bg-section">
+    <div class="bg-title">Page background</div>
+    <div class="bg-controls">
+      <button class="bg-dark" onclick="setPageColor('#121212')">Dark</button>
+      <button class="bg-blue" onclick="setPageColor('#1b263b')">Blue</button>
+      <button class="bg-green" onclick="setPageColor('#2d6a4f')">Green</button>
+      <input type="file" accept="image/*" onchange="setPageImage(event)">
+    </div>
+  </div>
+
+  <!-- 🔽 NEW: CARD BACKGROUND -->
+  <div class="bg-section">
+    <div class="bg-title">To-Do background</div>
+    <div class="bg-controls">
+      <button class="bg-dark" onclick="setCardColor('#1e1e1e')">Dark</button>
+      <button class="bg-blue" onclick="setCardColor('#2a3a5e')">Blue</button>
+      <button class="bg-green" onclick="setCardColor('#2d6a4f')">Green</button>
+      <input type="file" accept="image/*" onchange="setCardImage(event)">
+    </div>
   </div>
 
   <div class="input-box">
@@ -203,17 +254,24 @@ const list = document.getElementById("taskList");
 const welcomeText = document.getElementById("welcomeText");
 const profileImg = document.getElementById("profileImg");
 const profileInput = document.getElementById("profileInput");
+const todoBox = document.getElementById("todoBox");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let theme = localStorage.getItem("theme") || "dark";
 let name = localStorage.getItem("name") || prompt("Enter your name") || "User";
 let photo = localStorage.getItem("photo");
+let pageBg = localStorage.getItem("pageBg");
+let cardBg = localStorage.getItem("cardBg");
 let isSaved = true;
 
+/* restore */
 welcomeText.textContent = `Welcome, ${name} 👋`;
 document.body.className = theme;
 profileImg.src = photo || "https://via.placeholder.com/90";
+if(pageBg) document.body.style.background = pageBg;
+if(cardBg) todoBox.style.background = cardBg;
 
+/* existing logic */
 function changeName(){
   const n = prompt("Enter name", name);
   if(n){ name=n; localStorage.setItem("name",n); welcomeText.textContent=`Welcome, ${n} 👋`; }
@@ -230,6 +288,33 @@ profileInput.onchange=e=>{
   r.readAsDataURL(e.target.files[0]);
 };
 
+/* 🔽 NEW background functions */
+function setPageColor(c){
+  document.body.style.background=c;
+  localStorage.setItem("pageBg",c);
+}
+function setPageImage(e){
+  const r=new FileReader();
+  r.onload=()=>{
+    document.body.style.background=`url(${r.result})`;
+    localStorage.setItem("pageBg",`url(${r.result})`);
+  };
+  r.readAsDataURL(e.target.files[0]);
+}
+function setCardColor(c){
+  todoBox.style.background=c;
+  localStorage.setItem("cardBg",c);
+}
+function setCardImage(e){
+  const r=new FileReader();
+  r.onload=()=>{
+    todoBox.style.background=`url(${r.result})`;
+    localStorage.setItem("cardBg",`url(${r.result})`);
+  };
+  r.readAsDataURL(e.target.files[0]);
+}
+
+/* tasks */
 render();
 
 function addTask(){
@@ -242,7 +327,6 @@ function addTask(){
   taskInput.value=""; durationInput.value="";
   isSaved=false; render();
 }
-
 function toggleComplete(i){ tasks[i].completed=!tasks[i].completed; isSaved=false; render(); }
 function editTask(i){
   const t=prompt("Edit task",tasks[i].text);
@@ -282,4 +366,3 @@ window.addEventListener("beforeunload",e=>{
 
 </body>
 </html>
-
