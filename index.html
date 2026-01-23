@@ -7,81 +7,112 @@
 
 <style>
 :root {
-    --bg:#121212;
-    --card:#1e1e1e;
-    --text:#ffffff;
-    --accent:#ff3d3d;
+  --bg:#121212;
+  --card:#1e1e1e;
+  --text:#ffffff;
+  --accent:#ff3d3d;
 }
-
 body.light {
-    --bg:#f5f5f5;
-    --text:#000000;
-    --accent:#d32f2f;
+  --bg:#f5f5f5;
+  --text:#000000;
+  --accent:#d32f2f;
 }
 
 * { box-sizing:border-box; font-family:Arial,sans-serif; }
 
 body {
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    padding:20px;
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  background-size:cover;
+  background-position:center;
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  padding:20px;
 }
 
 /* App */
 .todo {
-    width:100%;
-    max-width:420px;
-    background:var(--card);
-    padding:16px;
-    border-radius:12px;
-    display:flex;
-    flex-direction:column;
+  width:100%;
+  max-width:420px;
+  background:var(--card);
+  padding:16px;
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
 }
 
 /* Header */
 .header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
 }
-
 .header button {
-    border:none;
-    padding:6px 12px;
-    border-radius:6px;
-    color:white;
-    cursor:pointer;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
 }
-
 .name-btn { background:#4caf50; }
 .theme-btn { background:var(--accent); }
 
+/* Profile */
+.profile {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:10px 0;
+}
+.profile img {
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--accent);
+  cursor:pointer;
+}
+.profile small {
+  font-size:12px;
+  opacity:.7;
+}
 .welcome {
-    text-align:center;
-    margin-bottom:6px;
+  margin-top:6px;
+  font-size:22px;
+  font-weight:600;
 }
 
-/* Card color controls */
-.color-controls {
-    display:flex;
-    gap:6px;
-    margin-bottom:8px;
+/* Controls */
+.controls {
+  display:flex;
+  gap:6px;
+  margin-bottom:8px;
 }
-
-.color-controls button {
-    flex:1;
-    border:none;
-    padding:8px;
-    border-radius:6px;
-    cursor:pointer;
-    color:white;
+.controls button, .controls input {
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
+.bg1 { background:#121212; color:white; }
+.bg2 { background:#1b263b; color:white; }
+.bg3 { background:#2d6a4f; color:white; }
 
+/* Card color */
+.card-colors {
+  display:flex;
+  gap:6px;
+  margin-bottom:8px;
+}
+.card-colors button {
+  flex:1;
+  height:28px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
 .c1 { background:#1e1e1e; }
 .c2 { background:#2a3a5e; }
 .c3 { background:#2d6a4f; }
@@ -89,84 +120,74 @@ body {
 
 /* Input */
 .input-box {
-    display:flex;
-    gap:6px;
+  display:flex;
+  gap:6px;
 }
-
 .input-box input,
 .input-box input[type="time"] {
-    padding:10px;
-    border:none;
-    border-radius:6px;
-    outline:none;
+  padding:10px;
+  border:none;
+  border-radius:6px;
 }
-
 .input-box input[type="text"] { flex:1; }
-
 .input-box button {
-    background:var(--accent);
-    border:none;
-    color:white;
-    padding:10px 14px;
-    border-radius:6px;
-    cursor:pointer;
+  background:var(--accent);
+  border:none;
+  color:white;
+  padding:10px 14px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
 /* Tasks */
 ul {
-    list-style:none;
-    padding:0;
-    margin:14px 0;
-    flex:1;
-    overflow-y:auto;
+  list-style:none;
+  padding:0;
+  margin:14px 0;
+  flex:1;
+  overflow-y:auto;
 }
-
 li {
-    background:rgba(0,0,0,0.35);
-    padding:10px;
-    margin-bottom:8px;
-    border-radius:6px;
-    display:flex;
-    align-items:center;
-    gap:8px;
+  background:rgba(0,0,0,.35);
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:6px;
+  display:flex;
+  gap:8px;
 }
-
 body.light li { background:#e0e0e0; }
 
 li.completed .task-text {
-    text-decoration:line-through;
-    opacity:.6;
+  text-decoration:line-through;
+  opacity:.6;
 }
-
 .task-info { flex:1; }
 .task-text { font-size:15px; }
 .task-time { font-size:12px; opacity:.7; }
 
 .actions {
-    display:flex;
-    align-items:center;
-    gap:5px;
+  display:flex;
+  align-items:center;
+  gap:5px;
 }
-
 .actions button {
-    border:none;
-    padding:5px 7px;
-    border-radius:4px;
-    cursor:pointer;
+  border:none;
+  padding:5px 7px;
+  border-radius:4px;
+  cursor:pointer;
 }
-
 .edit { background:orange; }
 .delete { background:red; color:white; }
 
 /* Save */
 .save-btn {
-    background:green;
-    color:white;
-    border:none;
-    padding:12px;
-    border-radius:8px;
-    font-size:15px;
-    cursor:pointer;
+  background:green;
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:8px;
+  font-size:15px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -175,30 +196,43 @@ li.completed .task-text {
 
 <div class="todo" id="todoBox">
 
-    <div class="header">
-        <button class="name-btn" onclick="changeName()">Name</button>
-        <button class="theme-btn" onclick="toggleTheme()">Theme</button>
-    </div>
+  <div class="header">
+    <button class="name-btn" onclick="changeName()">Name</button>
+    <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+  </div>
 
+  <div class="profile">
+    <img id="profileImg" onclick="pickProfile()">
+    <small>Tap photo to change</small>
+    <input type="file" id="profileInput" hidden accept="image/*">
     <div class="welcome" id="welcomeText"></div>
+  </div>
 
-    <!-- To-Do Card Color -->
-    <div class="color-controls">
-        <button class="c1" onclick="setCardColor('#1e1e1e')"></button>
-        <button class="c2" onclick="setCardColor('#2a3a5e')"></button>
-        <button class="c3" onclick="setCardColor('#2d6a4f')"></button>
-        <button class="c4" onclick="setCardColor('#5a1f2d')"></button>
-    </div>
+  <!-- Background -->
+  <div class="controls">
+    <button class="bg1" onclick="setBgColor('#121212')">Dark</button>
+    <button class="bg2" onclick="setBgColor('#1b263b')">Blue</button>
+    <button class="bg3" onclick="setBgColor('#2d6a4f')">Green</button>
+    <input type="file" accept="image/*" onchange="setBgImage(event)">
+  </div>
 
-    <div class="input-box">
-        <input id="taskInput" placeholder="Task">
-        <input type="time" id="timeInput">
-        <button onclick="addTask()">Add</button>
-    </div>
+  <!-- Card color -->
+  <div class="card-colors">
+    <button class="c1" onclick="setCard('#1e1e1e')"></button>
+    <button class="c2" onclick="setCard('#2a3a5e')"></button>
+    <button class="c3" onclick="setCard('#2d6a4f')"></button>
+    <button class="c4" onclick="setCard('#5a1f2d')"></button>
+  </div>
 
-    <ul id="taskList"></ul>
+  <div class="input-box">
+    <input id="taskInput" placeholder="Task">
+    <input type="time" id="timeInput">
+    <button onclick="addTask()">Add</button>
+  </div>
 
-    <button class="save-btn" onclick="saveTasks()">Save</button>
+  <ul id="taskList"></ul>
+
+  <button class="save-btn" onclick="saveTasks()">Save</button>
 </div>
 
 <script>
@@ -207,138 +241,93 @@ const timeInput = document.getElementById("timeInput");
 const list = document.getElementById("taskList");
 const welcomeText = document.getElementById("welcomeText");
 const todoBox = document.getElementById("todoBox");
+const profileImg = document.getElementById("profileImg");
+const profileInput = document.getElementById("profileInput");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let theme = localStorage.getItem("theme") || "dark";
-let userName = localStorage.getItem("userName");
-let cardColor = localStorage.getItem("cardColor");
+let name = localStorage.getItem("name") || prompt("Enter your name") || "User";
+let card = localStorage.getItem("card");
+let bg = localStorage.getItem("bg");
+let photo = localStorage.getItem("photo");
 let isSaved = true;
 
-/* Name */
-if (!userName) {
-    userName = prompt("Enter your name") || "User";
-    localStorage.setItem("userName", userName);
-}
-welcomeText.textContent = `Welcome, ${userName} 👋`;
+welcomeText.textContent = `Welcome, ${name} 👋`;
+localStorage.setItem("name", name);
 
-function changeName() {
-    const n = prompt("Enter your name", userName);
-    if (n && n.trim()) {
-        userName = n;
-        localStorage.setItem("userName", userName);
-        welcomeText.textContent = `Welcome, ${userName} 👋`;
-    }
-}
-
-/* Theme */
 document.body.className = theme;
-function toggleTheme() {
-    theme = theme === "dark" ? "light" : "dark";
-    document.body.className = theme;
-    localStorage.setItem("theme", theme);
+if (card) todoBox.style.background = card;
+if (bg) document.body.style.background = bg;
+profileImg.src = photo || "https://via.placeholder.com/90";
+
+function changeName(){
+  const n = prompt("Enter name", name);
+  if(n){ name=n; localStorage.setItem("name",n); welcomeText.textContent=`Welcome, ${n} 👋`; }
 }
 
-/* Card Color */
-if (cardColor) todoBox.style.background = cardColor;
-
-function setCardColor(color) {
-    todoBox.style.background = color;
-    localStorage.setItem("cardColor", color);
+function toggleTheme(){
+  theme = theme==="dark"?"light":"dark";
+  document.body.className=theme;
+  localStorage.setItem("theme",theme);
 }
 
-/* Tasks */
+function setCard(c){ todoBox.style.background=c; localStorage.setItem("card",c); }
+
+function setBgColor(c){ document.body.style.background=c; localStorage.setItem("bg",c); }
+
+function setBgImage(e){
+  const r=new FileReader();
+  r.onload=()=>{ document.body.style.background=`url(${r.result})`; localStorage.setItem("bg",`url(${r.result})`); }
+  r.readAsDataURL(e.target.files[0]);
+}
+
+function pickProfile(){ profileInput.click(); }
+profileInput.onchange=e=>{
+  const r=new FileReader();
+  r.onload=()=>{ profileImg.src=r.result; localStorage.setItem("photo",r.result); }
+  r.readAsDataURL(e.target.files[0]);
+};
+
 render();
-
-function addTask() {
-    if (!taskInput.value.trim()) return;
-    tasks.unshift({
-        text: taskInput.value,
-        time: timeInput.value || "No time",
-        completed:false
-    });
-    taskInput.value="";
-    timeInput.value="";
-    isSaved=false;
-    render();
+function addTask(){
+  if(!taskInput.value) return;
+  tasks.unshift({text:taskInput.value,time:timeInput.value||"No time",completed:false});
+  taskInput.value=""; timeInput.value=""; isSaved=false; render();
 }
-
-function toggleComplete(i){
-    tasks[i].completed=!tasks[i].completed;
-    isSaved=false;
-    render();
-}
-
+function toggleComplete(i){ tasks[i].completed=!tasks[i].completed; isSaved=false; render(); }
 function editTask(i){
-    const t = prompt("Edit task", tasks[i].text);
-    if (t && t.trim()) {
-        tasks[i].text=t;
-        isSaved=false;
-        render();
-    }
+  const t=prompt("Edit task",tasks[i].text);
+  if(t){ tasks[i].text=t; isSaved=false; render(); }
 }
-
-function deleteTask(i){
-    tasks.splice(i,1);
-    isSaved=false;
-    render();
-}
+function deleteTask(i){ tasks.splice(i,1); isSaved=false; render(); }
 
 function render(){
-    list.innerHTML="";
-    tasks.forEach((t,i)=>{
-        const li=document.createElement("li");
-        if(t.completed) li.classList.add("completed");
-
-        const info=document.createElement("div");
-        info.className="task-info";
-
-        const text=document.createElement("div");
-        text.className="task-text";
-        text.textContent=t.text;
-
-        const time=document.createElement("div");
-        time.className="task-time";
-        time.textContent="⏰ "+t.time;
-
-        info.append(text,time);
-
-        const actions=document.createElement("div");
-        actions.className="actions";
-
-        const check=document.createElement("input");
-        check.type="checkbox";
-        check.checked=t.completed;
-        check.onclick=()=>toggleComplete(i);
-
-        const edit=document.createElement("button");
-        edit.textContent="✏";
-        edit.className="edit";
-        edit.onclick=()=>editTask(i);
-
-        const del=document.createElement("button");
-        del.textContent="✖";
-        del.className="delete";
-        del.onclick=()=>deleteTask(i);
-
-        actions.append(edit,del,check);
-        li.append(info,actions);
-        list.appendChild(li);
-    });
+  list.innerHTML="";
+  tasks.forEach((t,i)=>{
+    const li=document.createElement("li");
+    if(t.completed) li.classList.add("completed");
+    li.innerHTML=`
+      <div class="task-info">
+        <div class="task-text">${t.text}</div>
+        <div class="task-time">⏰ ${t.time}</div>
+      </div>
+      <div class="actions">
+        <button class="edit" onclick="editTask(${i})">✏</button>
+        <button class="delete" onclick="deleteTask(${i})">✖</button>
+        <input type="checkbox" ${t.completed?"checked":""} onclick="toggleComplete(${i})">
+      </div>`;
+    list.appendChild(li);
+  });
 }
 
-/* Save */
 function saveTasks(){
-    localStorage.setItem("tasks",JSON.stringify(tasks));
-    isSaved=true;
-    alert("Saved");
+  localStorage.setItem("tasks",JSON.stringify(tasks));
+  isSaved=true;
+  alert("Saved");
 }
 
-/* Exit warning */
 window.addEventListener("beforeunload",e=>{
-    if(!isSaved){
-        e.preventDefault();
-        e.returnValue="";
-    }
+  if(!isSaved){ e.preventDefault(); e.returnValue=""; }
 });
 </script>
 
