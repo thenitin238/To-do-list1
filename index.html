@@ -7,12 +7,14 @@
 
 <style>
 :root {
+    --bg:#121212;
     --card:#1e1e1e;
     --text:#ffffff;
     --accent:#ff3d3d;
 }
+
 body.light {
-    --card:#ffffff;
+    --bg:#f5f5f5;
     --text:#000000;
     --accent:#d32f2f;
 }
@@ -21,14 +23,12 @@ body.light {
 
 body {
     margin:0;
+    background:var(--bg);
+    color:var(--text);
     min-height:100vh;
     display:flex;
     justify-content:center;
     padding:20px;
-    color:var(--text);
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
 }
 
 /* App */
@@ -40,7 +40,6 @@ body {
     border-radius:12px;
     display:flex;
     flex-direction:column;
-    backdrop-filter: blur(6px);
 }
 
 /* Header */
@@ -50,6 +49,7 @@ body {
     align-items:center;
     margin-bottom:8px;
 }
+
 .header button {
     border:none;
     padding:6px 12px;
@@ -57,6 +57,7 @@ body {
     color:white;
     cursor:pointer;
 }
+
 .name-btn { background:#4caf50; }
 .theme-btn { background:var(--accent); }
 
@@ -65,29 +66,33 @@ body {
     margin-bottom:6px;
 }
 
-/* Background controls */
-.bg-controls {
+/* Card color controls */
+.color-controls {
     display:flex;
     gap:6px;
     margin-bottom:8px;
 }
-.bg-controls button,
-.bg-controls input {
+
+.color-controls button {
     flex:1;
-    padding:6px;
     border:none;
+    padding:8px;
     border-radius:6px;
     cursor:pointer;
+    color:white;
 }
-.bg1 { background:#121212; color:white; }
-.bg2 { background:#1b263b; color:white; }
-.bg3 { background:#2d6a4f; color:white; }
+
+.c1 { background:#1e1e1e; }
+.c2 { background:#2a3a5e; }
+.c3 { background:#2d6a4f; }
+.c4 { background:#5a1f2d; }
 
 /* Input */
 .input-box {
     display:flex;
     gap:6px;
 }
+
 .input-box input,
 .input-box input[type="time"] {
     padding:10px;
@@ -95,6 +100,7 @@ body {
     border-radius:6px;
     outline:none;
 }
+
 .input-box input[type="text"] { flex:1; }
 
 .input-box button {
@@ -114,6 +120,7 @@ ul {
     flex:1;
     overflow-y:auto;
 }
+
 li {
     background:rgba(0,0,0,0.35);
     padding:10px;
@@ -123,6 +130,7 @@ li {
     align-items:center;
     gap:8px;
 }
+
 body.light li { background:#e0e0e0; }
 
 li.completed .task-text {
@@ -139,12 +147,14 @@ li.completed .task-text {
     align-items:center;
     gap:5px;
 }
+
 .actions button {
     border:none;
     padding:5px 7px;
     border-radius:4px;
     cursor:pointer;
 }
+
 .edit { background:orange; }
 .delete { background:red; color:white; }
 
@@ -157,14 +167,13 @@ li.completed .task-text {
     border-radius:8px;
     font-size:15px;
     cursor:pointer;
-    margin-top:8px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="todo">
+<div class="todo" id="todoBox">
 
     <div class="header">
         <button class="name-btn" onclick="changeName()">Name</button>
@@ -173,12 +182,12 @@ li.completed .task-text {
 
     <div class="welcome" id="welcomeText"></div>
 
-    <!-- Background options -->
-    <div class="bg-controls">
-        <button class="bg1" onclick="setColor('#121212')">Dark</button>
-        <button class="bg2" onclick="setColor('#1b263b')">Blue</button>
-        <button class="bg3" onclick="setColor('#2d6a4f')">Green</button>
-        <input type="file" accept="image/*" onchange="setImage(event)">
+    <!-- To-Do Card Color -->
+    <div class="color-controls">
+        <button class="c1" onclick="setCardColor('#1e1e1e')"></button>
+        <button class="c2" onclick="setCardColor('#2a3a5e')"></button>
+        <button class="c3" onclick="setCardColor('#2d6a4f')"></button>
+        <button class="c4" onclick="setCardColor('#5a1f2d')"></button>
     </div>
 
     <div class="input-box">
@@ -197,12 +206,12 @@ const taskInput = document.getElementById("taskInput");
 const timeInput = document.getElementById("timeInput");
 const list = document.getElementById("taskList");
 const welcomeText = document.getElementById("welcomeText");
+const todoBox = document.getElementById("todoBox");
 
-/* Load state */
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let theme = localStorage.getItem("theme") || "dark";
 let userName = localStorage.getItem("userName");
-let bg = localStorage.getItem("bg");
+let cardColor = localStorage.getItem("cardColor");
 let isSaved = true;
 
 /* Name */
@@ -229,23 +238,12 @@ function toggleTheme() {
     localStorage.setItem("theme", theme);
 }
 
-/* Background */
-if (bg) document.body.style.background = bg;
+/* Card Color */
+if (cardColor) todoBox.style.background = cardColor;
 
-function setColor(color) {
-    document.body.style.background = color;
-    localStorage.setItem("bg", color);
-}
-
-function setImage(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-        document.body.style.background = `url(${reader.result})`;
-        localStorage.setItem("bg", `url(${reader.result})`);
-    };
-    reader.readAsDataURL(file);
+function setCardColor(color) {
+    todoBox.style.background = color;
+    localStorage.setItem("cardColor", color);
 }
 
 /* Tasks */
@@ -346,4 +344,3 @@ window.addEventListener("beforeunload",e=>{
 
 </body>
 </html>
-
