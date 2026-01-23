@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily To-Do</title>
+
+<style>
+:root {
+    --bg:#121212; --card:#1e1e1e; --text:#fff; --accent:#ff3d3d;
+}
+body.light {
+    --bg:#f5f5f5; --card:#fff; --text:#000; --accent:#d32f2f;
+}
+* { box-sizing:border-box; font-family:Arial,sans-serif; }
+
+body {
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:80px 10px 100px;
+}
+
+/* Top buttons */
+.theme-btn, .name-btn {
+    position:fixed;
+    top:15px;
+    padding:8px 14px;
+    border:none;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+    z-index:100;
+}
+.theme-btn { right:15px; background:var(--accent); }
+.name-btn { left:15px; background:#4caf50; }
+
+/* App */
+.todo {
+    width:100%;
+    max-width:420px;
+    background:var(--card);
+    padding:18px;
+    border-radius:10px;
+}
+
+h2, .welcome {
+    text-align:center;
+    margin-bottom:10px;
+}
+
+/* Input */
+.input-box {
+    display:flex;
+    gap:6px;
+}
+.input-box input,
+.input-box input[type="time"] {
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    outline:none;
+}
+.input-box input[type="text"] { flex:1; }
+
+.input-box button {
+    background:var(--accent);
+    border:none;
+    color:white;
+    padding:12px 14px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* Tasks */
+ul { list-style:none; padding:0; margin-top:16px; }
+li {
+    background:#2b2b2b;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+body.light li { background:#e0e0e0; }
+
+li.completed .task-text {
+    text-decoration:line-through;
+    opacity:.6;
+}
+
+.task-info { flex:1; }
+.task-text { font-size:16px; }
+.task-time { font-size:13px; opacity:.7; }
+
+/* Actions */
+.actions { display:flex; align-items:center; gap:6px; }
+.actions button {
+    border:none;
+    padding:6px 8px;
+    border-radius:4px;
+    cursor:pointer;
+}
+.edit { background:orange; }
+.delete { background:red; color:white; }
+.actions input[type="checkbox"] {
+    width:20px; height:20px; cursor:pointer;
+}
+
+/* Save */
+.save-btn {
+    position:fixed;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    background:green;
+    color:white;
+    border:none;
+    padding:14px 26px;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* Mobile */
+@media(max-width:480px){
+    .task-text{font-size:15px;}
+    .task-time{font-size:12px;}
+}
+</style>
+</head>
+
+<body>
+
+<button class="name-btn" onclick="changeName()">Name</button>
+<button class="theme-btn" onclick="toggleTheme()">Theme</button>
+
+<div class="todo">
+    <div class="welcome" id="welcomeText"></div>
+    <h2>My To-Do</h2>
+
+    <div class="input-box">
+        <input id="taskInput" placeholder="Task">
+        <input type="time" id="timeInput">
+        <button onclick="addTask()">Add</button>
+    </div>
+
+    <ul id="taskList"></ul>
+</div>
+
+<button class="save-btn" onclick="saveTasks()">Save</button>
+
+<script>
+const taskInput = document.getElementById("taskInput");
+const timeInput = document.getElementById("timeInput");
+const list = document.getElementById("taskList");
+const welcomeText = document.getElementById("welcomeText");
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let theme = localStorage.getItem("theme") || "dark";
+let userName = localStorage.getItem("userName");
+let isSaved = true;
+
+/* Name logic */
+if (!userName) {
+    userName = prompt("Enter your name");
+    if (!userName || !userName.trim()) userName = "User";
+    localStorage.setItem("userName", userName);
+}
+welcomeText.textContent = `Welcome, ${userName} 👋`;
+
+function changeName() {
+    const newName = prompt("Enter your name", userName);
+    if (newName && newName.trim()) {
+        userName = newName;
+        localStorage.setItem("userName", userName);
+        welcomeText.textContent = `Welcome, ${userName} 👋`;
+    }
+}
+
+/* Theme */
+document.body.className = theme;
+
+function toggleTheme() {
+    theme = theme === "dark" ? "light" : "dark";
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+}
+
+/* Tasks */
+render();
+
+function addTask() {
+    if (!taskInput.value.trim()) return;
+    tasks.unshift({
+        text: taskInput.value,
+        time: timeInput.value || "No time",
+        completed:false
+    });
+    taskInput.value = "";
+    timeInput.value = "";
+    isSaved = false;
+    render();
+}
+
+function toggleComplete(i){
+    tasks[i].completed = !tasks[i].completed;
+    isSaved = false;
+    render();
+}
+
+function editTask(i){
+    const t = prompt("Edit task", tasks[i].text);
+    if (t && t.trim()) {
+        tasks[i].text = t;
+        isSaved = false;
+        render();
+    }
+}
+
+function deleteTask(i){
+    tasks.splice(i,1);
+    isSaved = false;
+    render();
+}
+
+function render(){
+    list.innerHTML = "";
+    tasks.forEach((t,i)=>{
+        const li = document.createElement("li");
+        if (t.completed) li.classList.add("completed");
+
+        const info = document.createElement("div");
+        info.className = "task-info";
+
+        const text = document.createElement("div");
+        text.className = "task-text";
+        text.textContent = t.text;
+
+        const time = document.createElement("div");
+        time.className = "task-time";
+        time.textContent = "⏰ " + t.time;
+
+        info.append(text,time);
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const check = document.createElement("input");
+        check.type="checkbox";
+        check.checked = t.completed;
+        check.onclick = ()=>toggleComplete(i);
+
+        const edit = document.createElement("button");
+        edit.textContent="✏";
+        edit.className="edit";
+        edit.onclick=()=>editTask(i);
+
+        const del = document.createElement("button");
+        del.textContent="✖";
+        del.className="delete";
+        del.onclick=()=>deleteTask(i);
+
+        actions.append(edit,del,check);
+        li.append(info,actions);
+        list.appendChild(li);
+    });
+}
+
+/* Save */
+function saveTasks(){
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    isSaved = true;
+    alert("Saved");
+}
+
+/* Exit warning */
+window.addEventListener("beforeunload", e=>{
+    if(!isSaved){
+        e.preventDefault();
+        e.returnValue="";
+    }
+});
+</script>
+
+</body>
+</html>
