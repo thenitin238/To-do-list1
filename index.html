@@ -57,7 +57,6 @@
             font-weight: bolder;
             padding: 0 125px;
             text-decoration: underline;
-
         }
 
         .menu-btn {
@@ -265,6 +264,11 @@
             border-left: 4px solid #ff9800;
         }
 
+        li.overdue {
+            border-left: 4px solid #ff1744;
+            background: rgba(255, 0, 0, .15);
+        }
+
         .task-info {
             flex: 1;
         }
@@ -300,6 +304,7 @@
         .save-wrap {
             display: flex;
             justify-content: center;
+            gap: 10px;
             margin-top: 12px;
         }
 
@@ -311,6 +316,14 @@
             border-radius: 999px;
             font-size: 15px;
             cursor: pointer;
+        }
+
+        /* CHART */
+        canvas {
+            margin-top: 10px;
+            border-radius: 6px;
+            background: #000;
+            display: none;
         }
     </style>
 </head>
@@ -340,6 +353,9 @@
 
             <h4>Card Background</h4>
             <input type="color" onchange="setCardBg(this.value)">
+
+            <h4>Analytics</h4>
+            <button onclick="toggleChart()">Show / Hide Chart</button>
         </div>
 
         <div class="profile">
@@ -381,31 +397,24 @@
 
         <ul id="taskList"></ul>
 
+        <canvas id="performanceChart" width="360" height="150"></canvas>
+
         <div class="save-wrap">
             <button class="save-btn" onclick="saveTasks()">Save</button>
+            <button class="save-btn" style="background:#ff9800" onclick="endDay('manual')">End Day</button>
         </div>
 
     </div>
 
     <script>
-        /* ===== STATE LOAD ===== */
-        let rawTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-        /* 🔥 NORMALIZE OLD DATA (THE REAL FIX) */
-        let tasks = rawTasks.map(t => {
-            if (t.status === "completed") t.status = "done";
-            if (t.status === "not-done") t.status = "not";
-            if (!t.status) t.status = "pending";
-            return t;
-        });
-
-        let name = localStorage.getItem("name") || "User";
-        let photo = localStorage.getItem("photo");
+        /* ===== STATE ===== */
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        let history = JSON.parse(localStorage.getItem("history")) || [];
         let streak = +localStorage.getItem("streak") || 0;
-        let lastDone = localStorage.getItem("lastDone");
         let filter = "all";
+        let lastClosedDay = localStorage.getItem("lastClosedDay");
 
-        /* ELEMENTS */
+        /* ===== ELEMENTS ===== */
         const taskList = document.getElementById("taskList");
         const welcomeText = document.getElementById("welcomeText");
         const profileImg = document.getElementById("profileImg");
@@ -413,59 +422,108 @@
         const todayDate = document.getElementById("todayDate");
         const menu = document.getElementById("menu");
         const todoBox = document.getElementById("todoBox");
+        const chart = document.getElementById("performanceChart");
 
-        /* INIT */
-        welcomeText.textContent = `Welcome, ${name}`;
-        nameInput.value = name;
-        profileImg.src = photo || "https://via.placeholder.com/90";
-        todayDate.textContent = "📅 " + new Date().toLocaleDateString(undefined, {
+        /* ===== INIT ===== */
+        welcomeText.textContent = `Welcome, ${localStorage.getItem("name") || "User"}`;
+        nameInput.value = localStorage.getItem("name") || "";
+        profileImg.src = localStorage.getItem("photo") || "https://via.placeholder.com/90";
+        todayDate.textContent = new Date().toLocaleDateString(undefined, {
             weekday: "long", day: "2-digit", month: "short", year: "numeric"
         });
+        chart.style.display = localStorage.getItem("showChart") === "true" ? "block" : "none";
 
-        /* MENU */
+        /* ===== UI ===== */
         function toggleMenu() { menu.classList.toggle("show"); }
         function saveName() {
-            name = nameInput.value.trim();
-            localStorage.setItem("name", name);
-            welcomeText.textContent = `Welcome, ${name}`;
+            localStorage.setItem("name", nameInput.value.trim());
+            welcomeText.textContent = `Welcome, ${nameInput.value.trim()}`;
             menu.classList.remove("show");
         }
-
-        /* PROFILE */
         function pickProfile() { profileInput.click(); }
         profileInput.onchange = e => {
             const r = new FileReader();
-            r.onload = () => { profileImg.src = r.result; localStorage.setItem("photo", r.result); }
+            r.onload = () => { profileImg.src = r.result; localStorage.setItem("photo", r.result); };
             r.readAsDataURL(e.target.files[0]);
         };
-
-        /* THEME & COLORS */
         function toggleTheme() { document.body.classList.toggle("light"); }
         function setPageBg(c) { document.body.style.background = c; }
         function setCardBg(c) { todoBox.style.background = c; }
+        function toggleChart() {
+            const show = chart.style.display !== "block";
+            chart.style.display = show ? "block" : "none";
+            localStorage.setItem("showChart", show);
+        }
 
-        /* TASKS */
+        /* ===== TASK LOGIC ===== */
         function addTask() {
             if (!taskInput.value || !duration.value) return;
             const mins = unit.value === "hr" ? duration.value * 60 : +duration.value;
-            tasks.push({ text: taskInput.value, from: fromTime.value, mins, status: "pending" });
+            tasks.push({
+                text: taskInput.value,
+                from: fromTime.value,
+                mins,
+                createdAt: Date.now(),
+                status: "pending"
+            });
             taskInput.value = ""; fromTime.value = ""; duration.value = "";
             render();
         }
 
+        function isOverdue(t) {
+            if (!t.from || t.status !== "pending") return false;
+            const [h, m] = t.from.split(":").map(Number);
+            const d = new Date();
+            d.setHours(h); d.setMinutes(m + t.mins); d.setSeconds(0);
+            return Date.now() > d.getTime();
+        }
+
         function mark(i, s) {
             tasks[i].status = s;
-            if (s === "done") {
-                const today = new Date().toDateString();
-                if (today !== lastDone) {
-                    streak++; lastDone = today;
-                    localStorage.setItem("streak", streak);
-                    localStorage.setItem("lastDone", today);
-                }
-            }
+            render();
+            tryAutoEndDay(); // 🔑 auto reset after last task
+        }
+
+        function removeTask(i) {
+            tasks.splice(i, 1);
+            render();
+            tryAutoEndDay();
+        }
+
+        /* ===== DAY END (MANUAL + AUTO) ===== */
+        function endDay(mode = "manual") {
+            const today = new Date().toDateString();
+            if (lastClosedDay === today) return;
+
+            const total = tasks.length;
+            const doneCount = tasks.filter(t => t.status === "done").length;
+            const percent = total ? Math.round(doneCount / total * 100) : 0;
+
+            history.push({ date: today, total, done: doneCount, percent, mode });
+            if (history.length > 15) history.shift();
+            localStorage.setItem("history", JSON.stringify(history));
+
+            streak = percent >= 70 ? streak + 1 : 0;
+            localStorage.setItem("streak", streak);
+
+            tasks = []; // full reset
+            lastClosedDay = today;
+            localStorage.setItem("lastClosedDay", today);
+
             render();
         }
 
+        function tryAutoEndDay() {
+            const today = new Date().toDateString();
+            if (lastClosedDay === today) return;
+
+            const pending = tasks.filter(t => t.status === "pending").length;
+            if (pending !== 0) return;
+
+            endDay("auto");
+        }
+
+        /* ===== FILTER ===== */
         function setFilter(f, b) {
             filter = f;
             document.querySelectorAll(".filters button").forEach(x => x.classList.remove("active"));
@@ -473,12 +531,25 @@
             render();
         }
 
+        /* ===== SAVE ===== */
         function saveTasks() {
             localStorage.setItem("tasks", JSON.stringify(tasks));
             alert("Saved");
         }
 
-        /* RENDER (PENDING FIXED FOR GOOD) */
+        /* ===== CHART ===== */
+        function drawChart() {
+            if (chart.style.display !== "block") return;
+            const ctx = chart.getContext("2d");
+            ctx.clearRect(0, 0, chart.width, chart.height);
+            history.forEach((d, i) => {
+                const h = (d.percent / 100) * (chart.height - 30);
+                ctx.fillStyle = "#38bdf8";
+                ctx.fillRect(10 + i * 22, chart.height - h - 10, 14, h);
+            });
+        }
+
+        /* ===== RENDER ===== */
         function render() {
             taskList.innerHTML = "";
             let d = 0, n = 0, p = 0;
@@ -486,21 +557,24 @@
             tasks.forEach((t, i) => {
                 if (t.status === "done") d++;
                 else if (t.status === "not") n++;
-                else if (t.status === "pending") p++;
+                else p++;
 
                 if (filter !== "all" && t.status !== filter) return;
 
                 const li = document.createElement("li");
                 li.className = t.status;
+                if (isOverdue(t)) li.classList.add("overdue");
+
                 li.innerHTML = `
       <div class="task-info">
-        <div class="task-text">${t.text}</div>
+        <div>${t.text}</div>
         ${t.from ? `<div class="task-time">⏰ ${t.from}</div>` : ""}
         <div class="task-time">⏱ ${t.mins} min</div>
       </div>
       <div class="actions">
         <button class="done-btn" onclick="mark(${i},'done')">✔</button>
         <button class="not-btn" onclick="mark(${i},'not')">✖</button>
+        <button onclick="removeTask(${i})">🗑</button>
       </div>`;
                 taskList.appendChild(li);
             });
@@ -511,11 +585,13 @@
             pending.textContent = p;
             percent.textContent = tasks.length ? Math.round(d / tasks.length * 100) + "%" : "0%";
             streak.textContent = streak;
+
+            drawChart();
+            localStorage.setItem("tasks", JSON.stringify(tasks));
         }
 
         render();
     </script>
-
 </body>
 
 </html>
