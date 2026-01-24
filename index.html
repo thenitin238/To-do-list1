@@ -11,13 +11,13 @@
             --bg: #121212;
             --card: #1e1e1e;
             --text: #ffffff;
-            --accent: #ff3d3d;
+            --accent: #38bdf8;
         }
 
         body.light {
-            --bg: #f5f5f5;
+            --bg: #f5f7fb;
             --card: #ffffff;
-            --text: #000000;
+            --text: #111827;
         }
 
         * {
@@ -41,11 +41,10 @@
             background: var(--card);
             padding: 16px;
             border-radius: 14px;
-            display: flex;
-            flex-direction: column;
+            position: relative;
         }
 
-        /* header */
+        /* HEADER */
         .header {
             display: flex;
             justify-content: space-between;
@@ -53,26 +52,65 @@
         }
 
         .header h1 {
-            font-size: 16px;
+            margin: 0;
+            font-size: 22px;
+            padding: 0 130px;
+            text-decoration: underline;
         }
 
-        .header button {
+        .menu-btn {
+            background: none;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            color: white;
+            color: var(--text);
+            font-size: 22px;
             cursor: pointer;
         }
 
-        .name-btn {
-            background: #4caf50;
+        /* MENU */
+        .menu {
+            position: absolute;
+            top: 42px;
+            right: 16px;
+            background: var(--card);
+            border-radius: 10px;
+            padding: 10px;
+            width: 240px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+            z-index: 10;
         }
 
-        .theme-btn {
-            background: var(--accent);
+        .menu.show {
+            display: block;
         }
 
-        /* profile */
+        .menu h4 {
+            margin: 10px 0 4px;
+            font-size: 12px;
+            opacity: .6;
+        }
+
+        .menu button {
+            width: 100%;
+            margin: 4px 0;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #374151;
+            color: white;
+        }
+
+        .menu input {
+            width: 100%;
+            margin: 4px 0;
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* PROFILE */
         .profile {
             text-align: center;
             margin: 10px 0;
@@ -84,21 +122,15 @@
             border-radius: 50%;
             border: 2px solid var(--accent);
             object-fit: cover;
-            cursor: pointer;
-        }
-
-        .profile small {
-            font-size: 12px;
-            opacity: .7;
         }
 
         .welcome {
             margin-top: 6px;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
         }
 
-        /* stats */
+        /* STATS */
         .stats {
             display: flex;
             gap: 6px;
@@ -122,7 +154,7 @@
             background: #4caf50;
         }
 
-        .not-done {
+        .not {
             background: #f44336;
         }
 
@@ -137,7 +169,7 @@
             margin-bottom: 8px;
         }
 
-        /* filters */
+        /* FILTERS */
         .filters {
             display: flex;
             gap: 6px;
@@ -157,66 +189,7 @@
             color: white;
         }
 
-        /* color */
-        .color-section {
-            margin: 10px 0;
-        }
-
-        .color-title {
-            font-size: 13px;
-            font-weight: 600;
-            opacity: .6;
-            margin-bottom: 4px;
-        }
-
-        .color-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .color-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-
-        .color-btn.selected,
-        .color-picker.selected {
-            border-color: white;
-            box-shadow: 0 0 0 2px var(--accent);
-        }
-
-        .color-picker {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            background: none;
-        }
-
-        .color-picker::-webkit-color-swatch-wrapper {
-            padding: 0;
-            border-radius: 50%;
-        }
-
-        .color-picker::-webkit-color-swatch {
-            border: none;
-            border-radius: 50%;
-        }
-
-        .color-picker::-moz-color-swatch {
-            border: none;
-            border-radius: 50%;
-        }
-
-        /* input */
+        /* INPUT */
         .input-box {
             display: flex;
             gap: 6px;
@@ -255,7 +228,7 @@
             cursor: pointer;
         }
 
-        /* tasks */
+        /* TASKS */
         ul {
             list-style: none;
             padding: 0;
@@ -271,29 +244,21 @@
             margin-bottom: 8px;
         }
 
-        body.light li {
-            background: #e0e0e0;
-        }
-
         li.done {
             border-left: 4px solid #4caf50;
         }
 
-        li.not-done {
+        li.not {
             border-left: 4px solid #f44336;
             opacity: .7;
         }
 
-        li.not-done .task-text {
+        li.not .task-text {
             text-decoration: line-through;
         }
 
         .task-info {
             flex: 1;
-        }
-
-        .task-text {
-            font-size: 15px;
         }
 
         .task-time {
@@ -323,12 +288,19 @@
             color: white;
         }
 
+        /* SAVE */
+        .save-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
         .save-btn {
             background: green;
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 12px 28px;
+            border-radius: 999px;
             font-size: 15px;
             cursor: pointer;
         }
@@ -339,23 +311,39 @@
     <div class="todo" id="todoBox">
 
         <div class="header">
-            <button class="name-btn" onclick="changeName()">Name</button>
             <h1>To-Do-List</h1>
-            <button class="theme-btn" onclick="toggleTheme()">Theme</button>
+            <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+        </div>
+
+        <div class="menu" id="menu">
+            <h4>Name</h4>
+            <input id="nameInput" placeholder="Enter name">
+            <button onclick="saveName()">Save Name</button>
+
+            <h4>Profile</h4>
+            <button onclick="pickProfile()">Change Photo</button>
+            <input type="file" id="profileInput">
+
+            <h4>Theme</h4>
+            <button onclick="toggleTheme()">Light / Dark</button>
+
+            <h4>Page Background</h4>
+            <input type="color" onchange="setPageBg(this.value)">
+
+            <h4>Card Background</h4>
+            <input type="color" onchange="setCardBg(this.value)">
         </div>
 
         <div class="profile">
-            <img id="profileImg" onclick="pickProfile()">
-            <small>Tap photo to change</small>
-            <input type="file" id="profileInput" hidden>
+            <img id="profileImg">
             <div class="welcome" id="welcomeText"></div>
         </div>
 
         <div class="stats">
-            <div class="stat total">Total<br><span id="totalCount">0</span></div>
-            <div class="stat done">Done<br><span id="doneCount">0</span></div>
-            <div class="stat not-done">Not<br><span id="notDoneCount">0</span></div>
-            <div class="stat pending">Pending<br><span id="pendingCount">0</span></div>
+            <div class="stat total">Total<br><span id="total">0</span></div>
+            <div class="stat done">Done<br><span id="done">0</span></div>
+            <div class="stat not">Not<br><span id="not">0</span></div>
+            <div class="stat pending">Pending<br><span id="pending">0</span></div>
         </div>
 
         <div class="extra">
@@ -366,41 +354,15 @@
         <div class="filters">
             <button class="active" onclick="setFilter('all',this)">All</button>
             <button onclick="setFilter('done',this)">Done</button>
-            <button onclick="setFilter('not-done',this)">Not</button>
+            <button onclick="setFilter('not',this)">Not</button>
             <button onclick="setFilter('pending',this)">Pending</button>
-        </div>
-
-        <div class="color-section">
-            <div class="color-title">Page background</div>
-            <div class="color-controls" id="pageColors">
-                <button class="color-btn" style="background:#121212" data-color="#121212"
-                    onclick="setPageBg('#121212',this)"></button>
-                <button class="color-btn" style="background:#1b263b" data-color="#1b263b"
-                    onclick="setPageBg('#1b263b',this)"></button>
-                <button class="color-btn" style="background:#2d6a4f" data-color="#2d6a4f"
-                    onclick="setPageBg('#2d6a4f',this)"></button>
-                <input type="color" class="color-picker" id="pagePicker" oninput="setPageBg(this.value,'picker')">
-            </div>
-        </div>
-
-        <div class="color-section">
-            <div class="color-title">To-Do background</div>
-            <div class="color-controls" id="cardColors">
-                <button class="color-btn" style="background:#1e1e1e" data-color="#1e1e1e"
-                    onclick="setCardBg('#1e1e1e',this)"></button>
-                <button class="color-btn" style="background:#2a3a5e" data-color="#2a3a5e"
-                    onclick="setCardBg('#2a3a5e',this)"></button>
-                <button class="color-btn" style="background:#2d6a4f" data-color="#2d6a4f"
-                    onclick="setCardBg('#2d6a4f',this)"></button>
-                <input type="color" class="color-picker" id="cardPicker" oninput="setCardBg(this.value,'picker')">
-            </div>
         </div>
 
         <div class="input-box">
             <input id="taskInput" placeholder="Task">
             <input type="time" id="fromTime">
-            <input type="number" id="durationInput" min="1" placeholder="Time">
-            <select id="unitInput">
+            <input type="number" id="duration" min="1" placeholder="Time">
+            <select id="unit">
                 <option value="min">min</option>
                 <option value="hr">hr</option>
             </select>
@@ -408,73 +370,55 @@
         </div>
 
         <ul id="taskList"></ul>
-        <button class="save-btn" onclick="saveTasks()">Save</button>
+
+        <div class="save-wrap">
+            <button class="save-btn" onclick="saveTasks()">Save</button>
+        </div>
 
     </div>
 
     <script>
-        const todoBox = document.getElementById("todoBox");
-        const taskInput = document.getElementById("taskInput");
-        const fromTimeInput = document.getElementById("fromTime");
-        const durationInput = document.getElementById("durationInput");
-        const unitInput = document.getElementById("unitInput");
-        const list = document.getElementById("taskList");
-
-        const totalCount = document.getElementById("totalCount");
-        const doneCount = document.getElementById("doneCount");
-        const notDoneCount = document.getElementById("notDoneCount");
-        const pendingCount = document.getElementById("pendingCount");
-        const percent = document.getElementById("percent");
-        const streakEl = document.getElementById("streak");
-
-        const welcomeText = document.getElementById("welcomeText");
-        const profileImg = document.getElementById("profileImg");
-
+        /* STATE */
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         let name = localStorage.getItem("name") || "User";
         let photo = localStorage.getItem("photo");
-        let theme = localStorage.getItem("theme") || "dark";
-        let pageBg = localStorage.getItem("pageBg");
-        let cardBg = localStorage.getItem("cardBg");
-        let filter = "all";
         let streak = +localStorage.getItem("streak") || 0;
-        let lastDoneDate = localStorage.getItem("lastDoneDate");
-        let isSaved = true;
+        let lastDone = localStorage.getItem("lastDone");
+        let filter = "all";
 
-        /* restore */
-        welcomeText.textContent = `Welcome, ${name} 👋`;
+        /* ELEMENTS */
+        const menu = document.getElementById("menu");
+        const taskList = document.getElementById("taskList");
+        const welcomeText = document.getElementById("welcomeText");
+        const profileImg = document.getElementById("profileImg");
+        const nameInput = document.getElementById("nameInput");
+        const todoBox = document.getElementById("todoBox");
+
+        /* INIT */
+        welcomeText.textContent = `Welcome, ${name}`;
+        nameInput.value = name;
         profileImg.src = photo || "https://via.placeholder.com/90";
-        if (theme === "light") document.body.classList.add("light");
-        if (pageBg) document.body.style.background = pageBg;
-        if (cardBg) todoBox.style.background = cardBg;
 
-        /* restore color highlight */
-        function restoreHighlight(parentId, color) {
-            if (!color) return;
-            const parent = document.getElementById(parentId);
-            const btn = [...parent.querySelectorAll(".color-btn")]
-                .find(b => b.dataset.color === color);
-            highlight(parent, btn || 'picker');
+        /* MENU */
+        function toggleMenu() {
+            menu.classList.toggle("show");
         }
-        restoreHighlight("pageColors", pageBg);
-        restoreHighlight("cardColors", cardBg);
 
-        function toggleTheme() {
-            document.body.classList.toggle("light");
-            localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+        /* NAME FIX */
+        function saveName() {
+            const v = nameInput.value.trim();
+            if (!v) return;
+            name = v;
+            localStorage.setItem("name", v);
+            welcomeText.textContent = `Welcome, ${v}`;
+            menu.classList.remove("show");
         }
-        function changeName() {
-            const n = prompt("Enter name", name);
-            if (n) {
-                name = n;
-                localStorage.setItem("name", n);
-                welcomeText.textContent = `Welcome, ${n} 👋`;
-            }
-        }
+
+        /* PROFILE */
         function pickProfile() {
             document.getElementById("profileInput").click();
         }
-        document.getElementById("profileInput").onchange = e => {
+        profileInput.onchange = e => {
             const r = new FileReader();
             r.onload = () => {
                 profileImg.src = r.result;
@@ -483,130 +427,89 @@
             r.readAsDataURL(e.target.files[0]);
         };
 
-        function highlight(parent, btn) {
-            parent.querySelectorAll(".color-btn,.color-picker")
-                .forEach(el => el.classList.remove("selected"));
-            if (btn === "picker") parent.querySelector(".color-picker").classList.add("selected");
-            else if (btn) btn.classList.add("selected");
+        /* THEME & COLORS */
+        function toggleTheme() {
+            document.body.classList.toggle("light");
         }
-        function setPageBg(c, btn) {
+        function setPageBg(c) {
             document.body.style.background = c;
             localStorage.setItem("pageBg", c);
-            highlight(document.getElementById("pageColors"), btn);
-            isSaved = false;
         }
-        function setCardBg(c, btn) {
+        function setCardBg(c) {
             todoBox.style.background = c;
             localStorage.setItem("cardBg", c);
-            highlight(document.getElementById("cardColors"), btn);
-            isSaved = false;
         }
 
-        function formatTime(t) {
-            if (!t) return "";
-            let [h, m] = t.split(":").map(Number);
-            const ap = h >= 12 ? "PM" : "AM";
-            h = h % 12 || 12;
-            return `${h}:${m.toString().padStart(2, "0")} ${ap}`;
-        }
-        function formatDuration(mins) {
-            const h = Math.floor(mins / 60);
-            const m = mins % 60;
-            return h ? `${h}h ${m}m` : `${m}m`;
-        }
-
+        /* TASK LOGIC */
         function addTask() {
-            if (!taskInput.value || !durationInput.value) return;
-            const minutes = unitInput.value === "hr"
-                ? durationInput.value * 60
-                : +durationInput.value;
+            if (!taskInput.value || !duration.value) return;
+            const mins = unit.value === "hr" ? duration.value * 60 : +duration.value;
             tasks.push({
                 text: taskInput.value,
-                from: fromTimeInput.value || null,
-                minutes,
+                from: fromTime.value,
+                mins,
                 status: "pending"
             });
             taskInput.value = "";
-            fromTimeInput.value = "";
-            durationInput.value = "";
-            isSaved = false;
-            autoSave();
+            fromTime.value = "";
+            duration.value = "";
             render();
         }
 
-        function markDone(i) {
-            tasks[i].status = "done";
-            const today = new Date().toDateString();
-            if (lastDoneDate !== today) {
-                streak++;
-                lastDoneDate = today;
-                localStorage.setItem("streak", streak);
-                localStorage.setItem("lastDoneDate", today);
+        function mark(i, s) {
+            tasks[i].status = s;
+            if (s === "done") {
+                const today = new Date().toDateString();
+                if (today !== lastDone) {
+                    streak++;
+                    lastDone = today;
+                    localStorage.setItem("streak", streak);
+                    localStorage.setItem("lastDone", today);
+                }
             }
-            isSaved = false;
-            autoSave();
-            render();
-        }
-        function markNotDone(i) {
-            tasks[i].status = "not-done";
-            isSaved = false;
-            autoSave();
             render();
         }
 
-        function setFilter(f, btn) {
+        function setFilter(f, b) {
             filter = f;
-            document.querySelectorAll(".filters button")
-                .forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
+            document.querySelectorAll(".filters button").forEach(x => x.classList.remove("active"));
+            b.classList.add("active");
             render();
         }
 
-        function autoSave() {
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-        }
         function saveTasks() {
-            autoSave();
-            isSaved = true;
+            localStorage.setItem("tasks", JSON.stringify(tasks));
             alert("Saved");
         }
 
-        /* unsaved warning */
-        window.addEventListener("beforeunload", e => {
-            if (!isSaved) {
-                e.preventDefault();
-                e.returnValue = "";
-            }
-        });
-
         function render() {
-            list.innerHTML = "";
-            let done = 0, not = 0, pend = 0;
+            taskList.innerHTML = "";
+            let d = 0, n = 0, p = 0;
             tasks.forEach((t, i) => {
-                if (t.status === "done") done++;
-                else if (t.status === "not-done") not++;
-                else pend++;
+                if (t.status === "done") d++;
+                else if (t.status === "not") n++;
+                else p++;
                 if (filter !== "all" && t.status !== filter) return;
                 const li = document.createElement("li");
                 li.className = t.status;
                 li.innerHTML = `
       <div class="task-info">
         <div class="task-text">${t.text}</div>
-        ${t.from ? `<div class="task-time">⏰ ${formatTime(t.from)}</div>` : ""}
-        <div class="task-time">⏱ ${formatDuration(t.minutes)}</div>
+        ${t.from ? `<div class="task-time">⏰ ${t.from}</div>` : ""}
+        <div class="task-time">⏱ ${t.mins} min</div>
       </div>
       <div class="actions">
-        <button class="done-btn" onclick="markDone(${i})">✔</button>
-        <button class="not-btn" onclick="markNotDone(${i})">✖</button>
+        <button class="done-btn" onclick="mark(${i},'done')">✔</button>
+        <button class="not-btn" onclick="mark(${i},'not')">✖</button>
       </div>`;
-                list.appendChild(li);
+                taskList.appendChild(li);
             });
-            totalCount.textContent = tasks.length;
-            doneCount.textContent = done;
-            notDoneCount.textContent = not;
-            pendingCount.textContent = pend;
-            percent.textContent = tasks.length ? Math.round(done / tasks.length * 100) + "%" : "0%";
-            streakEl.textContent = streak;
+            total.textContent = tasks.length;
+            done.textContent = d;
+            not.textContent = n;
+            pending.textContent = p;
+            percent.textContent = tasks.length ? Math.round(d / tasks.length * 100) + "%" : "0%";
+            streak.textContent = streak;
         }
 
         render();
