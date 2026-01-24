@@ -493,25 +493,36 @@
         /* ===== DAY END (MANUAL + AUTO) ===== */
         function endDay(mode = "manual") {
             const today = new Date().toDateString();
-            if (lastClosedDay === today) return;
+
+            // prevent duplicate AUTO close
+            if (lastClosedDay === today && mode === "auto") return;
 
             const total = tasks.length;
             const doneCount = tasks.filter(t => t.status === "done").length;
             const percent = total ? Math.round(doneCount / total * 100) : 0;
 
-            history.push({ date: today, total, done: doneCount, percent, mode });
-            if (history.length > 15) history.shift();
-            localStorage.setItem("history", JSON.stringify(history));
+            // only save analytics ONCE per day
+            if (lastClosedDay !== today) {
+                history.push({ date: today, total, done: doneCount, percent, mode });
+                if (history.length > 15) history.shift();
+                localStorage.setItem("history", JSON.stringify(history));
 
-            streak = percent >= 70 ? streak + 1 : 0;
-            localStorage.setItem("streak", streak);
+                streak = percent >= 70 ? streak + 1 : 0;
+                localStorage.setItem("streak", streak);
+            }
 
-            tasks = []; // full reset
+            // mark day closed
             lastClosedDay = today;
+            lastCloseMode = mode;
             localStorage.setItem("lastClosedDay", today);
+            localStorage.setItem("lastCloseMode", mode);
+
+            // reset tasks ONLY on manual OR first auto
+            tasks = [];
 
             render();
         }
+
 
         function tryAutoEndDay() {
             const today = new Date().toDateString();
@@ -522,6 +533,7 @@
 
             endDay("auto");
         }
+
 
         /* ===== FILTER ===== */
         function setFilter(f, b) {
@@ -548,6 +560,14 @@
                 ctx.fillRect(10 + i * 22, chart.height - h - 10, 14, h);
             });
         }
+        function formatDuration(mins) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+
+            if (h === 0) return `${m} min`;
+            return `${h}:${m.toString().padStart(2, "0")} hr`;
+        }
+
 
         /* ===== RENDER ===== */
         function render() {
@@ -569,7 +589,8 @@
       <div class="task-info">
         <div>${t.text}</div>
         ${t.from ? `<div class="task-time">⏰ ${t.from}</div>` : ""}
-        <div class="task-time">⏱ ${t.mins} min</div>
+        <div class="task-time">⏱ ${formatDuration(t.mins)}</div>
+
       </div>
       <div class="actions">
         <button class="done-btn" onclick="mark(${i},'done')">✔</button>
