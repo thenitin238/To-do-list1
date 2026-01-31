@@ -453,7 +453,9 @@
             const show = chart.style.display !== "block";
             chart.style.display = show ? "block" : "none";
             localStorage.setItem("showChart", show);
+            if (show) drawChart(); // 🔥 force redraw
         }
+
 
         /* ===== TASK LOGIC ===== */
         function addTask() {
@@ -551,15 +553,30 @@
 
         /* ===== CHART ===== */
         function drawChart() {
-            if (chart.style.display !== "block") return;
+            if (chart.offsetParent === null) return;
+
             const ctx = chart.getContext("2d");
             ctx.clearRect(0, 0, chart.width, chart.height);
-            history.forEach((d, i) => {
+
+            const barWidth = 16;
+            const gap = 8;
+            const maxBars = Math.min(history.length, 15);
+
+            history.slice(-maxBars).forEach((d, i) => {
                 const h = (d.percent / 100) * (chart.height - 30);
+                const x = 10 + i * (barWidth + gap);
+                const y = chart.height - h - 10;
+
                 ctx.fillStyle = "#38bdf8";
-                ctx.fillRect(10 + i * 22, chart.height - h - 10, 14, h);
+                ctx.fillRect(x, y, barWidth, h);
+
+                // percent text
+                ctx.fillStyle = "#fff";
+                ctx.font = "10px Arial";
+                ctx.fillText(d.percent + "%", x - 2, y - 4);
             });
         }
+
         function formatDuration(mins) {
             const h = Math.floor(mins / 60);
             const m = mins % 60;
