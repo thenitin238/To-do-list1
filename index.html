@@ -397,7 +397,19 @@
 
         <ul id="taskList"></ul>
 
-        <canvas id="performanceChart" width="360" height="150"></canvas>
+        <!-- ANALYTICS -->
+        <div id="analyticsBox" style="display:none">
+            <canvas id="performanceChart" width="360" height="160"></canvas>
+
+            <div id="verdict" style="
+            text-align:center;
+            margin-top:6px;
+            font-weight:bold;
+            font-size:14px;
+         ">
+            </div>
+        </div>
+
 
         <div class="save-wrap">
             <button class="save-btn" onclick="saveTasks()">Save</button>
@@ -407,6 +419,7 @@
     </div>
 
     <script>
+        let hoverIndex = -1;
         /* ===== STATE ===== */
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         let history = JSON.parse(localStorage.getItem("history")) || [];
@@ -558,24 +571,37 @@
             const ctx = chart.getContext("2d");
             ctx.clearRect(0, 0, chart.width, chart.height);
 
-            const barWidth = 16;
-            const gap = 8;
-            const maxBars = Math.min(history.length, 15);
+            const barW = 14;
+            const gap = 10;
+            const baseY = chart.height - 20;
 
-            history.slice(-maxBars).forEach((d, i) => {
-                const h = (d.percent / 100) * (chart.height - 30);
-                const x = 10 + i * (barWidth + gap);
-                const y = chart.height - h - 10;
+            history.forEach((d, i) => {
+                const h = (d.percent / 100) * (chart.height - 40);
+                const x = 16 + i * (barW + gap);
+                const y = baseY - h;
 
-                ctx.fillStyle = "#38bdf8";
-                ctx.fillRect(x, y, barWidth, h);
+                // gradient bar
+                const grad = ctx.createLinearGradient(0, y, 0, baseY);
+                grad.addColorStop(0, d.percent >= 70 ? "#4ade80" : "#fb7185");
+                grad.addColorStop(1, "#0f172a");
 
-                // percent text
-                ctx.fillStyle = "#fff";
-                ctx.font = "10px Arial";
-                ctx.fillText(d.percent + "%", x - 2, y - 4);
+                ctx.fillStyle = grad;
+                ctx.fillRect(x, y, barW, h);
+
+                // today highlight
+                if (i === history.length - 1) {
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x - 2, y - 2, barW + 4, h + 4);
+                }
+
+                // hover tooltip
+                if (i === hoverIndex) {
+                    drawTooltip(ctx, x, y, d.percent, i === history.length - 1);
+                }
             });
         }
+
 
         function formatDuration(mins) {
             const h = Math.floor(mins / 60);
@@ -583,6 +609,25 @@
 
             if (h === 0) return `${m} min`;
             return `${h}:${m.toString().padStart(2, "0")} hr`;
+        }
+        function drawTooltip(ctx, x, y, percent, isToday) {
+            const text = isToday ? `Today: ${percent}%` : `Day ${hoverIndex + 1}: ${percent}%`;
+
+            ctx.font = "11px Arial";
+            const padding = 6;
+            const textW = ctx.measureText(text).width;
+
+            const boxX = x - textW / 2;
+            const boxY = y - 26;
+
+            ctx.fillStyle = "#020617";
+            ctx.fillRect(boxX, boxY, textW + padding * 2, 20);
+
+            ctx.strokeStyle = "#38bdf8";
+            ctx.strokeRect(boxX, boxY, textW + padding * 2, 20);
+
+            ctx.fillStyle = "#fff";
+            ctx.fillText(text, boxX + padding, boxY + 14);
         }
 
 
