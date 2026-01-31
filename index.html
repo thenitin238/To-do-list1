@@ -444,7 +444,8 @@
         todayDate.textContent = new Date().toLocaleDateString(undefined, {
             weekday: "long", day: "2-digit", month: "short", year: "numeric"
         });
-        chart.style.display = localStorage.getItem("showChart") === "true" ? "block" : "none";
+        document.getElementById("analyticsBox").style.display =
+            localStorage.getItem("showChart") === "true" ? "block" : "none";
 
         /* ===== UI ===== */
         function toggleMenu() { menu.classList.toggle("show"); }
@@ -463,10 +464,13 @@
         function setPageBg(c) { document.body.style.background = c; }
         function setCardBg(c) { todoBox.style.background = c; }
         function toggleChart() {
-            const show = chart.style.display !== "block";
-            chart.style.display = show ? "block" : "none";
+            const box = document.getElementById("analyticsBox");
+            const show = box.style.display !== "block";
+
+            box.style.display = show ? "block" : "none";
             localStorage.setItem("showChart", show);
-            if (show) drawChart(); // 🔥 force redraw
+
+            if (show) drawChart();
         }
 
 
