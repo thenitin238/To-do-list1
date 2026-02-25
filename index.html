@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily To-Do</title>
+
+   <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="todo" id="todoBox">
+
+        <div class="header">
+            <h1>To-Do-List</h1>
+            <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+        </div>
+
+        <div class="menu" id="menu">
+            <h4>Name</h4>
+            <input id="nameInput">
+            <button onclick="saveName()">Save Name</button>
+
+            <h4>Profile</h4>
+            <button onclick="pickProfile()">Change Photo</button>
+            <input type="file" id="profileInput">
+
+            <h4>Theme</h4>
+            <button onclick="toggleTheme()">Light / Dark</button>
+
+            <h4>Page Background</h4>
+            <input type="color" onchange="setPageBg(this.value)">
+
+            <h4>Card Background</h4>
+            <input type="color" onchange="setCardBg(this.value)">
+
+            <h4>Analytics</h4>
+            <button onclick="toggleChart()">Show / Hide Chart</button>
+        </div>
+
+        <div class="profile">
+            <img id="profileImg">
+            <div class="welcome" id="welcomeText"></div>
+        </div>
+
+        <div class="today-date" id="todayDate"></div>
+
+        <div class="stats">
+            <div class="stat total">Total<br><span id="total">0</span></div>
+            <div class="stat done">Done<br><span id="done">0</span></div>
+            <div class="stat not">Not<br><span id="not">0</span></div>
+            <div class="stat pending">Pending<br><span id="pending">0</span></div>
+        </div>
+
+        <div class="extra">
+            <div>Completion: <span id="percent">0%</span></div>
+            <div>🔥 Streak: <span id="streak">0</span></div>
+        </div>
+
+        <div class="filters">
+            <button class="active" onclick="setFilter('all',this)">All</button>
+            <button onclick="setFilter('done',this)">Done</button>
+            <button onclick="setFilter('not',this)">Not</button>
+            <button onclick="setFilter('pending',this)">Pending</button>
+        </div>
+
+        <div class="input-box">
+            <input id="taskInput" placeholder="Task">
+            <input type="time" id="fromTime">
+            <input type="number" id="duration" min="1" placeholder="Time">
+            <select id="unit">
+                <option value="min">min</option>
+                <option value="hr">hr</option>
+            </select>
+            <button onclick="addTask()">Add</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <canvas id="performanceChart" width="360" height="150"></canvas>
+
+        <div class="save-wrap">
+            <button class="save-btn" onclick="saveTasks()">Save</button>
+            <button class="save-btn" style="background:#ff9800" onclick="endDay('manual')">End Day</button>
+        </div>
+
+    </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

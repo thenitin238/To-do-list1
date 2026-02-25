@@ -1,0 +1,318 @@
+ :root {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --text: #ffffff;
+            --accent: #38bdf8;
+        }
+
+        body.light {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .todo {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            padding: 16px;
+            border-radius: 14px;
+            position: relative;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bolder;
+            padding: 0 125px;
+            text-decoration: underline;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        /* MENU */
+        .menu {
+            position: absolute;
+            top: 42px;
+            right: 16px;
+            background: var(--card);
+            border-radius: 10px;
+            padding: 10px;
+            width: 240px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+            z-index: 10;
+        }
+
+        .menu.show {
+            display: block;
+        }
+
+        .menu h4 {
+            margin: 10px 0 4px;
+            font-size: 12px;
+            opacity: .6;
+        }
+
+        .menu button {
+            width: 100%;
+            margin: 4px 0;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #374151;
+            color: white;
+        }
+
+        .menu input {
+            width: 100%;
+            margin: 4px 0;
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* PROFILE */
+        .profile {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .profile img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
+
+        .welcome {
+            margin-top: 6px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .today-date {
+            text-align: center;
+            font-size: 13px;
+            opacity: .7;
+            margin-bottom: 8px;
+        }
+
+        /* STATS */
+        .stats {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        .stat {
+            flex: 1;
+            padding: 6px;
+            border-radius: 6px;
+            text-align: center;
+            color: white;
+        }
+
+        .total {
+            background: #607d8b;
+        }
+
+        .done {
+            background: #4caf50;
+        }
+
+        .not {
+            background: #f44336;
+        }
+
+        .pending {
+            background: #ff9800;
+        }
+
+        .extra {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        /* FILTERS */
+        .filters {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        .filters button {
+            flex: 1;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .filters .active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* INPUT */
+        .input-box {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .input-box input,
+        .input-box select {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+        }
+
+        .input-box input[type="text"] {
+            flex: 1 1 100%;
+        }
+
+        .input-box input[type="time"] {
+            width: 120px;
+        }
+
+        .input-box input[type="number"] {
+            width: 80px;
+        }
+
+        .input-box select {
+            width: 90px;
+        }
+
+        .input-box button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* TASKS */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 14px 0;
+        }
+
+        li {
+            background: rgba(0, 0, 0, .35);
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        li.done {
+            border-left: 4px solid #4caf50;
+        }
+
+        li.not {
+            border-left: 4px solid #f44336;
+            opacity: .7;
+        }
+
+        li.pending {
+            border-left: 4px solid #ff9800;
+        }
+
+        li.overdue {
+            border-left: 4px solid #ff1744;
+            background: rgba(255, 0, 0, .15);
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-time {
+            font-size: 13px;
+            opacity: .7;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .actions button {
+            border: none;
+            padding: 5px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .done-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .not-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        /* SAVE */
+        .save-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .save-btn {
+            background: green;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* CHART */
+        canvas {
+            margin-top: 10px;
+            border-radius: 6px;
+            background: #000;
+            display: none;
+        }
